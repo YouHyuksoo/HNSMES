@@ -139,8 +139,6 @@ namespace HAENGSUNG_HNSMES_UI.Global
         {
             get
             {
-                string ipaddress = string.Empty;
-
                 IPHostEntry senderIP = Dns.GetHostEntry(Dns.GetHostName());
                
                 for (int i = 0; i < senderIP.AddressList.Length; i++)
