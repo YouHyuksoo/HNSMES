@@ -1,0 +1,457 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Net;
+using System.Drawing;
+
+///* Create Object Instance */
+//ftp ftpClient = new ftp(@"ftp://10.10.10.10/", "user", "password");
+
+///* Upload a File */
+//ftpClient.upload("etc/test.txt", @"C:\Users\metastruct\Desktop\test.txt");
+
+///* Download a File */
+//ftpClient.download("etc/test.txt", @"C:\Users\metastruct\Desktop\test.txt");
+
+///* Delete a File */
+//ftpClient.delete("etc/test.txt");
+
+///* Rename a File */
+//ftpClient.rename("etc/test.txt", "test2.txt");
+
+///* Create a New Directory */
+//ftpClient.createDirectory("etc/test");
+
+///* Get the Date/Time a File was Created */
+//string fileDateTime = ftpClient.getFileCreatedDateTime("etc/test.txt");
+//Console.WriteLine(fileDateTime);
+
+///* Get the Size of a File */
+//string fileSize = ftpClient.getFileSize("etc/test.txt");
+//Console.WriteLine(fileSize);
+
+///* Get Contents of a Directory (Names Only) */
+//string[] simpleDirectoryListing = ftpClient.directoryListDetailed("/etc");
+//for (int i = 0; i < simpleDirectoryListing.Count(); i++) { Console.WriteLine(simpleDirectoryListing[i]); }
+
+///* Get Contents of a Directory with Detailed File/Directory Info */
+//string[] detailDirectoryListing = ftpClient.directoryListDetailed("/etc");
+//for (int i = 0; i < detailDirectoryListing.Count(); i++) { Console.WriteLine(detailDirectoryListing[i]); }
+///* Release Resources */
+//ftpClient = null;
+
+namespace HAENGSUNG_HNSMES_UI.Class
+{
+    class FTPHelper
+    {
+        private string host = null;
+        private string user = null;
+        private string pass = null;
+        private FtpWebRequest ftpRequest = null;
+        private FtpWebResponse ftpResponse = null;
+        private Stream ftpStream = null;
+        private int bufferSize = 2048;
+
+        /* Construct Object */
+        public FTPHelper(string hostIP, string userName, string password) { host = hostIP; user = userName; pass = password; }
+
+        /* Download File */
+        public void download(string remoteFile, string localFile)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/MES/" + remoteFile);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+                /* Establish Return Communication with the FTP Server */
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                /* Get the FTP Server's Response Stream */
+                ftpStream = ftpResponse.GetResponseStream();
+                /* Open a File Stream to Write the Downloaded File */
+                FileStream localFileStream = new FileStream(localFile, FileMode.Create, FileAccess.Write);
+                /* Buffer for the Downloaded Data */
+                byte[] byteBuffer = new byte[bufferSize];
+                int bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
+                /* Download the File by Writing the Buffered Data Until the Transfer is Complete */
+                try
+                {
+                    while (bytesRead > 0)
+                    {
+                        localFileStream.Write(byteBuffer, 0, bytesRead);
+                        bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
+                    }
+                }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                /* Resource Cleanup */
+                localFileStream.Close();
+                ftpStream.Close();
+                ftpResponse.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            return;
+        }
+
+        /* Upload File */
+        public void upload(string remoteFile, string localFile)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/MES/" + remoteFile);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
+                /* Establish Return Communication with the FTP Server */
+                ftpStream = ftpRequest.GetRequestStream();
+                /* Open a File Stream to Read the File for Upload */
+                FileStream localFileStream = new FileStream(localFile, FileMode.Open, FileAccess.Read);
+                /* Buffer for the Downloaded Data */
+                byte[] byteBuffer = new byte[bufferSize];
+                int bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
+                /* Upload the File by Sending the Buffered Data Until the Transfer is Complete */
+                try
+                {
+                    while (bytesSent != 0)
+                    {
+                        ftpStream.Write(byteBuffer, 0, bytesSent);
+                        bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
+                    }
+                }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                /* Resource Cleanup */
+                localFileStream.Close();
+                ftpStream.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            return;
+        }
+
+        /* Delete File */
+        public void delete(string deleteFile)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/MES/" + deleteFile);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.DeleteFile;
+                /* Establish Return Communication with the FTP Server */
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                /* Resource Cleanup */
+                ftpResponse.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            return;
+        }
+
+        /* Rename File */
+        public void rename(string currentFileNameAndPath, string newFileName)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/MES/" + currentFileNameAndPath);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.Rename;
+                /* Rename the File */
+                ftpRequest.RenameTo = newFileName;
+                /* Establish Return Communication with the FTP Server */
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                /* Resource Cleanup */
+                ftpResponse.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            return;
+        }
+
+        /* Create a New Directory on the FTP Server */
+        public void createDirectory(string newDirectory)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/MES/" + newDirectory);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.MakeDirectory;
+                /* Establish Return Communication with the FTP Server */
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                /* Resource Cleanup */
+                ftpResponse.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            return;
+        }
+
+        /* Get the Date/Time a File was Created */
+        public string getFileCreatedDateTime(string fileName)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/MES/" + fileName);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.GetDateTimestamp;
+                /* Establish Return Communication with the FTP Server */
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                /* Establish Return Communication with the FTP Server */
+                ftpStream = ftpResponse.GetResponseStream();
+                /* Get the FTP Server's Response Stream */
+                StreamReader ftpReader = new StreamReader(ftpStream);
+                /* Store the Raw Response */
+                string fileInfo = null;
+                /* Read the Full Response Stream */
+                try { fileInfo = ftpReader.ReadToEnd(); }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                /* Resource Cleanup */
+                ftpReader.Close();
+                ftpStream.Close();
+                ftpResponse.Close();
+                ftpRequest = null;
+                /* Return File Created Date Time */
+                return fileInfo;
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            /* Return an Empty string Array if an Exception Occurs */
+            return "";
+        }
+
+        /* Get the Size of a File */
+        public string getFileSize(string fileName)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/MES/" + fileName);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.GetFileSize;
+                /* Establish Return Communication with the FTP Server */
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                /* Establish Return Communication with the FTP Server */
+                ftpStream = ftpResponse.GetResponseStream();
+                /* Get the FTP Server's Response Stream */
+                StreamReader ftpReader = new StreamReader(ftpStream);
+                /* Store the Raw Response */
+                string fileInfo = null;
+                /* Read the Full Response Stream */
+                try { while (ftpReader.Peek() != -1) { fileInfo = ftpReader.ReadToEnd(); } }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                /* Resource Cleanup */
+                ftpReader.Close();
+                ftpStream.Close();
+                ftpResponse.Close();
+                ftpRequest = null;
+                /* Return File Size */
+                return fileInfo;
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            /* Return an Empty string Array if an Exception Occurs */
+            return "";
+        }
+
+        public bool checkDirectoryExists(string Directory) 
+        {
+            FtpWebRequest requestFTPUploader = (FtpWebRequest)WebRequest.Create(host + "/MES/" + Directory);
+            requestFTPUploader.Credentials = new NetworkCredential(user, pass); 
+            var request = requestFTPUploader; 
+            request.Method = WebRequestMethods.Ftp.ListDirectory;
+            try
+            {
+                using (var result = (FtpWebResponse)request.GetResponse())
+                {
+                    result.Close(); //정상 종료 
+                    return true;
+                }
+            }
+            catch (WebException)
+            {
+                //FtpWebResponse response = (FtpWebResponse)e.Response;
+                //if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                //{
+                //    Console.WriteLine("Does not exist");
+                //}
+                //else if (e.Status == WebExceptionStatus.ProtocolError)
+                //{
+                //    Console.WriteLine("Status Code : {0}", ((HttpWebResponse)e.Response).StatusCode);
+                //    Console.WriteLine("Status Description : {0}", ((HttpWebResponse)e.Response).StatusDescription);
+                //}
+                //else
+                //{
+                //    Console.WriteLine("Error: " + e.Message);
+                //}
+                return false;
+            }
+            finally
+            {
+                request = null;
+                requestFTPUploader = null;
+            }
+            
+        }
+
+
+
+        /* List Directory Contents File/Folder Name Only */
+        public string[] directoryListSimple(string directory)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/MES/" + directory);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.ListDirectory;
+                /* Establish Return Communication with the FTP Server */
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                /* Establish Return Communication with the FTP Server */
+                ftpStream = ftpResponse.GetResponseStream();
+                /* Get the FTP Server's Response Stream */
+                StreamReader ftpReader = new StreamReader(ftpStream);
+                /* Store the Raw Response */
+                string directoryRaw = null;
+                /* Read Each Line of the Response and Append a Pipe to Each Line for Easy Parsing */
+                try { while (ftpReader.Peek() != -1) { directoryRaw += ftpReader.ReadLine() + "|"; } }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                /* Resource Cleanup */
+                ftpReader.Close();
+                ftpStream.Close();
+                ftpResponse.Close();
+                ftpRequest = null;
+                /* Return the Directory Listing as a string Array by Parsing 'directoryRaw' with the Delimiter you Append (I use | in This Example) */
+                try { string[] directoryList = directoryRaw.Split("|".ToCharArray()); return directoryList; }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            /* Return an Empty string Array if an Exception Occurs */
+            return new string[] { "" };
+        }
+
+        /* List Directory Contents in Detail (Name, Size, Created, etc.) */
+        public string[] directoryListDetailed(string directory)
+        {
+            try
+            {
+                /* Create an FTP Request */
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/MES/" + directory);
+                /* Log in to the FTP Server with the User Name and Password Provided */
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                /* When in doubt, use these options */
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+                /* Specify the Type of FTP Request */
+                ftpRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+                /* Establish Return Communication with the FTP Server */
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                /* Establish Return Communication with the FTP Server */
+                ftpStream = ftpResponse.GetResponseStream();
+                /* Get the FTP Server's Response Stream */
+                StreamReader ftpReader = new StreamReader(ftpStream);
+                /* Store the Raw Response */
+                string directoryRaw = null;
+                /* Read Each Line of the Response and Append a Pipe to Each Line for Easy Parsing */
+                try { while (ftpReader.Peek() != -1) { directoryRaw += ftpReader.ReadLine() + "|"; } }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                /* Resource Cleanup */
+                ftpReader.Close();
+                ftpStream.Close();
+                ftpResponse.Close();
+                ftpRequest = null;
+                /* Return the Directory Listing as a string Array by Parsing 'directoryRaw' with the Delimiter you Append (I use | in This Example) */
+                try { string[] directoryList = directoryRaw.Split("|".ToCharArray()); return directoryList; }
+                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            /* Return an Empty string Array if an Exception Occurs */
+            return new string[] { "" };
+        }
+
+        public Bitmap GetImgByte(string ftpFilePath)
+        {
+            WebClient ftpClient = new WebClient();
+
+            try
+            {
+                ftpClient.Credentials = new NetworkCredential(user, pass);
+
+                byte[] imageByte = ftpClient.DownloadData(host + "/MES/" + ftpFilePath);
+                ByteToImage(imageByte);
+                return ByteToImage(imageByte);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
+        }
+
+        public static Bitmap ByteToImage(byte[] blob)
+        {
+            try
+            {
+                MemoryStream mStream = new MemoryStream();
+                mStream.Write(blob, 0, Convert.ToInt32(blob.Length));
+                Bitmap bm = new Bitmap(mStream, false);
+                mStream.Dispose();
+                return bm;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+    }
+}

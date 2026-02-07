@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command:*)",
+      "Bash(dotnet --list-sdks:*)",
+      "Bash(winget:*)",
+      "Bash(tr:*)",
+      "Bash(export PATH=\"/c/Program Files/dotnet:$PATH\")",
+      "Bash(export DOTNET_ROOT=\"/c/Program Files/dotnet\")",
+      "Bash(dotnet:*)",
+      "Bash(dotnet --list-runtimes:*)",
+      "Bash(dir:*)",
+      "Bash(ls:*)",
+      "Bash(done)",
+      "Bash(grep:*)",
+      "Bash(findstr:*)",
+      "Bash(cmd /c \"dir /s /b \"\"C:\\\\Program Files\\\\DevExpress*\"\" 2>nul\")",
+      "Bash(cmd /c:*)",
+      "Bash(del:*)",
+      "Bash(del \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI\\\\Forms\\\\COM\\\\COMPREVIEW.resx.bak\")",
+      "Bash(del \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI\\\\Forms\\\\COM\\\\COMREGISTER_NEW.resx.bak\")",
+      "Bash(del \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI\\\\MainForm.resx.bak\")",
+      "Bash(del \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI\\\\Properties\\\\licenses.licx.bak\")",
+      "Bash(del \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI\\\\UserControl\\\\SAL\\\\xucPreview.resx.bak\")",
+      "Bash(powershell -NoProfile -Command:*)",
+      "Bash(fi)",
+      "Bash(where:*)",
+      "Bash(reg query \"HKLM\\\\SOFTWARE\\\\Microsoft\\\\NET Framework Setup\\\\NDP\" /s)",
+      "Bash(\"C:/Program Files/dotnet/dotnet.exe\" --info)",
+      "Bash(\"C:/Program Files \\(x86\\)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/MSBuild.exe\" \"C:/Project/HNSMES/HAENGSUNG_HNSMES_UI/HAENGSUNG_HNSMES_UI.csproj\" /target:Build /verbosity:minimal /property:Configuration=Debug)",
+      "Bash(C:/Users/ADMINI~1/AppData/Local/Temp/claude/C--Project-HNSMES/207309d9-40e6-415b-8cad-61353436f584/scratchpad/nuget.exe install:*)",
+      "Bash(\"C:/Program Files \\(x86\\)/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/MSBuild.exe\" \"C:/Project/HNSMES/HAENGSUNG_HNSMES_UI/HAENGSUNG_HNSMES_UI.csproj\" /target:Rebuild /verbosity:minimal /property:Configuration=Debug)",
+      "Bash(choco:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(\"C:\\\\Program Files \\(x86\\)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI\\\\HAENGSUNG_HNSMES_UI.csproj\" /t:Build /v:q /p:Configuration=Release)"
+    ]
+  }
+}

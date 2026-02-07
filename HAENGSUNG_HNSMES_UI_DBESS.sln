@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34601.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HAENGSUNG_HNSMES_UI", "HAENGSUNG_HNSMES_UI", "{14885E6A-5D30-42FC-BF50-107EA9AA8965}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DLL", "DLL", "{173D0AA6-3D11-46F4-AD57-E1DDD848D6B4}"
+	ProjectSection(SolutionItems) = preProject
+		DLL\GoogleTranslateAPI.dll = DLL\GoogleTranslateAPI.dll
+		DLL\IDAT.Controls.dll = DLL\IDAT.Controls.dll
+		DLL\IDAT.DATA.dll = DLL\IDAT.DATA.dll
+		DLL\IDAT.Devexpress.v1.0.dll = DLL\IDAT.Devexpress.v1.0.dll
+		DLL\IDAT.IO.dll = DLL\IDAT.IO.dll
+		DLL\IDAT.UI.Message.v1.0.dll = DLL\IDAT.UI.Message.v1.0.dll
+		DLL\IDAT.WCFClient.dll = DLL\IDAT.WCFClient.dll
+		DLL\IDAT.WebService.dll = DLL\IDAT.WebService.dll
+		DLL\IDAT_Common.dll = DLL\IDAT_Common.dll
+		DLL\Interop.OPCAutomation.dll = DLL\Interop.OPCAutomation.dll
+		DLL\Microsoft.VisualBasic.Compatibility.dll = DLL\Microsoft.VisualBasic.Compatibility.dll
+		DLL\Microsoft.VisualBasic.PowerPacks.dll = DLL\Microsoft.VisualBasic.PowerPacks.dll
+		DLL\Neodynamic.SDK.ThermalLabel.dll = DLL\Neodynamic.SDK.ThermalLabel.dll
+		DLL\NotificationWindow.dll = DLL\NotificationWindow.dll
+		DLL\TSCLIB.dll = DLL\TSCLIB.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HAENGSUNG_HNSMES_UI", "HAENGSUNG_HNSMES_UI\HAENGSUNG_HNSMES_UI.csproj", "{B76C7CC9-8AB0-49CF-AC1F-6D8C93B42ACF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B76C7CC9-8AB0-49CF-AC1F-6D8C93B42ACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B76C7CC9-8AB0-49CF-AC1F-6D8C93B42ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B76C7CC9-8AB0-49CF-AC1F-6D8C93B42ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B76C7CC9-8AB0-49CF-AC1F-6D8C93B42ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B76C7CC9-8AB0-49CF-AC1F-6D8C93B42ACF} = {14885E6A-5D30-42FC-BF50-107EA9AA8965}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CAB9E95-E5EF-4024-8E75-DCED0960EC54}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = FALSE
+	EndGlobalSection
+EndGlobal

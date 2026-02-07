@@ -1,0 +1,5 @@
+root = false
+
+[*.cs]
+# IDE1006: Naming rule violation - WinForms event handlers use controlName_EventName convention
+dotnet_diagnostic.IDE1006.severity = none
