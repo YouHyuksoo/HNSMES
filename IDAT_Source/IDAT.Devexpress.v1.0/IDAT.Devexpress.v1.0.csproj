@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>IDAT.Devexpress.v1.0</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <UseWindowsForms>True</UseWindowsForms>
+    <TargetFramework>net40</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxTextEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxCheckEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxColorEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxDateEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxCalcEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxComboBoxEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxButtonEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxMemoEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxRadioGroup.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxLookUpEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxPopupContainerEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxGridLookUpEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxSpinEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxTimeEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxMemoExEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxPictureEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxSimpleButton.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxImageComboBoxEdit.bmp" />
+    <None Remove="IDAT.Devexpress.DXControl.IdatDxCheckedComboBoxEdit.bmp" />
+    <None Remove="IDAT.Devexpress.v1.0.dll.licenses" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxTextEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxTextEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxCheckEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxCheckEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxColorEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxColorEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxDateEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxDateEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxCalcEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxCalcEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxComboBoxEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxComboBoxEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxButtonEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxButtonEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxMemoEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxMemoEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxRadioGroup.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxRadioGroup.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxLookUpEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxLookUpEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxPopupContainerEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxPopupContainerEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxGridLookUpEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxGridLookUpEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxSpinEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxSpinEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxTimeEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxTimeEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxMemoExEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxMemoExEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxPictureEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxPictureEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxSimpleButton.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxSimpleButton.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxImageComboBoxEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxImageComboBoxEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.DXControl.IdatDxCheckedComboBoxEdit.bmp" LogicalName="IDAT.Devexpress.DXControl.IdatDxCheckedComboBoxEdit.bmp" />
+    <EmbeddedResource Include="IDAT.Devexpress.v1.0.dll.licenses" LogicalName="IDAT.Devexpress.v1.0.dll.licenses" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Utils.v13.2" />
+    <Reference Include="DevExpress.XtraEditors.v13.2" />
+    <Reference Include="DevExpress.XtraGrid.v13.2" />
+    <Reference Include="DevExpress.XtraReports.v13.2" />
+    <Reference Include="DevExpress.XtraBars.v13.2" />
+    <Reference Include="DevExpress.XtraLayout.v13.2" />
+    <Reference Include="DevExpress.XtraPrinting.v13.2" />
+    <Reference Include="DevExpress.Data.v13.2" />
+    <Reference Include="DevExpress.XtraPivotGrid.v13.2" />
+    <Reference Include="System.Data" />
+    <Reference Include="DevExpress.XtraRichEdit.v13.2" />
+    <Reference Include="DevExpress.RichEdit.v13.2.Core" />
+    <Reference Include="DevExpress.XtraTreeList.v13.2" />
+    <Reference Include="DevExpress.Printing.v13.2.Core" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+</Project>
