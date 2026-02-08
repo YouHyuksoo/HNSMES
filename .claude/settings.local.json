@@ -33,7 +33,13 @@
       "Bash(choco:*)",
       "Bash(pip install:*)",
       "Bash(python:*)",
-      "Bash(\"C:\\\\Program Files \\(x86\\)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI\\\\HAENGSUNG_HNSMES_UI.csproj\" /t:Build /v:q /p:Configuration=Release)"
+      "Bash(\"C:\\\\Program Files \\(x86\\)\\\\Microsoft Visual Studio\\\\2022\\\\BuildTools\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI\\\\HAENGSUNG_HNSMES_UI.csproj\" /t:Build /v:q /p:Configuration=Release)",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_navigate"
     ]
   }
 }

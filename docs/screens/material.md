@@ -30,9 +30,9 @@ flowchart LR
 
 ### MATM001 - 자재입고등록
 
-<iframe src="/assets/screen-visualizations/MATA201.Designer.html" width="100%" height="550" style="border:1px solid #ccc; border-radius:8px;"></iframe>
+<iframe src="../assets/screen-visualizations/MATA201.Designer.html" width="100%" height="550" style="border:1px solid #ccc; border-radius:8px;"></iframe>
 
-[전체 화면 보기](/assets/screen-visualizations/MATA201.Designer.html){ .md-button .md-button--primary }
+[전체 화면 보기](../assets/screen-visualizations/MATA201.Designer.html){ .md-button .md-button--primary }
 
 !!! note "화면 설명"
     자재 입고 시 입고 정보를 등록하고 검수 결과를 기록하는 핵심 화면입니다.

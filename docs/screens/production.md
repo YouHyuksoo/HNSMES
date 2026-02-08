@@ -33,9 +33,9 @@ flowchart TB
 
 ### PRODT001 - 생산실적등록
 
-<iframe src="/assets/screen-visualizations/PRDA201.Designer.html" width="100%" height="600" style="border:1px solid #ccc; border-radius:8px;"></iframe>
+<iframe src="../assets/screen-visualizations/PRDA201.Designer.html" width="100%" height="600" style="border:1px solid #ccc; border-radius:8px;"></iframe>
 
-[전체 화면 보기](/assets/screen-visualizations/PRDA201.Designer.html){ .md-button .md-button--primary }
+[전체 화면 보기](../assets/screen-visualizations/PRDA201.Designer.html){ .md-button .md-button--primary }
 
 !!! note "화면 설명"
     생산 공정에서 발생한 실적 데이터를 등록하는 핵심 화면입니다.

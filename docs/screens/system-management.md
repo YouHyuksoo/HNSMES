@@ -31,9 +31,9 @@ flowchart TB
 
 ### SYST001 - 사용자관리
 
-<iframe src="/assets/screen-visualizations/SYSA211.Designer.html" width="100%" height="550" style="border:1px solid #ccc; border-radius:8px;"></iframe>
+<iframe src="../assets/screen-visualizations/SYSA211.designer.html" width="100%" height="550" style="border:1px solid #ccc; border-radius:8px;"></iframe>
 
-[전체 화면 보기](/assets/screen-visualizations/SYSA211.Designer.html){ .md-button .md-button--primary }
+[전체 화면 보기](../assets/screen-visualizations/SYSA211.designer.html){ .md-button .md-button--primary }
 
 !!! note "화면 설명"
     시스템 사용자를 등록하고 기본 정보 및 상태를 관리하는 핵심 화면입니다.

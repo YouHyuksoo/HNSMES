@@ -6,10 +6,6 @@ icon: material/home
 # HNSMES UI 개발자 문서 중앙 저장소
 
 <p align="center">
-  <img src="assets/banner.svg" alt="HNSMES Banner" width="800">
-</p>
-
-<p align="center">
   <a href="https://dotnet.microsoft.com/download/dotnet-framework/net40">
     <img src="https://img.shields.io/badge/.NET%20Framework-4.0-blue" alt=".NET Framework 4.0">
   </a>

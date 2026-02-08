@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HNSMES Form Viewer</title>
+<style>
+:root {
+  --bg: #1e1e2e;
+  --bg2: #282840;
+  --bg3: #313150;
+  --fg: #cdd6f4;
+  --fg2: #a6adc8;
+  --accent: #89b4fa;
+  --accent2: #74c7ec;
+  --green: #a6e3a1;
+  --yellow: #f9e2af;
+  --red: #f38ba8;
+  --mauve: #cba6f7;
+  --peach: #fab387;
+  --teal: #94e2d5;
+  --border: #45475a;
+  --surface: #313244;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--fg); display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+
+/* Header */
+.header { display:flex; align-items:center; padding:8px 16px; background:var(--bg2); border-bottom:1px solid var(--border); gap:16px; flex-shrink:0; }
+.header h1 { font-size:16px; font-weight:600; color:var(--accent); white-space:nowrap; }
+.header .stats { font-size:12px; color:var(--fg2); white-space:nowrap; }
+.search-box { flex:1; max-width:400px; }
+.search-box input { width:100%; padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg3); color:var(--fg); font-size:13px; outline:none; }
+.search-box input:focus { border-color:var(--accent); }
+
+/* Main Layout */
+.main { display:flex; flex:1; overflow:hidden; }
+
+/* Module Sidebar */
+.sidebar-modules { width:140px; background:var(--bg2); border-right:1px solid var(--border); overflow-y:auto; flex-shrink:0; }
+.mod-item { padding:10px 12px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-size:13px; border-bottom:1px solid var(--border); transition:background .15s; }
+.mod-item:hover { background:var(--bg3); }
+.mod-item.active { background:var(--accent); color:var(--bg); font-weight:600; }
+.mod-item .badge { font-size:11px; background:var(--bg3); color:var(--fg2); padding:1px 6px; border-radius:10px; min-width:22px; text-align:center; }
+.mod-item.active .badge { background:rgba(0,0,0,.2); color:var(--bg); }
+
+/* Form List */
+.sidebar-forms { width:220px; background:var(--bg); border-right:1px solid var(--border); overflow-y:auto; flex-shrink:0; }
+.form-item { padding:8px 12px; cursor:pointer; border-bottom:1px solid var(--border); transition:background .15s; }
+.form-item:hover { background:var(--bg3); }
+.form-item.active { background:var(--surface); border-left:3px solid var(--accent); }
+.form-item .form-id { font-size:13px; font-weight:600; color:var(--fg); }
+.form-item .form-title { font-size:11px; color:var(--fg2); margin-top:2px; }
+.form-item .form-meta { font-size:10px; color:var(--fg2); margin-top:2px; display:flex; gap:8px; }
+.form-item .form-meta .tag { padding:1px 5px; border-radius:3px; font-size:9px; }
+.tag-simple { background:#a6e3a133; color:var(--green); }
+.tag-master-detail { background:#89b4fa33; color:var(--accent); }
+.tag-tabbed { background:#cba6f733; color:var(--mauve); }
+.tag-report { background:#f9e2af33; color:var(--yellow); }
+
+/* Viewer */
+.viewer { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.viewer-header { padding:8px 16px; background:var(--bg2); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.viewer-header .form-name { font-size:15px; font-weight:600; color:var(--accent); }
+.viewer-header .form-info { font-size:12px; color:var(--fg2); }
+.viewer-body { flex:1; display:flex; overflow:hidden; }
+.svg-container { flex:1; overflow:hidden; position:relative; background:var(--bg); }
+.svg-container svg { cursor:grab; }
+.svg-container svg:active { cursor:grabbing; }
+
+/* Detail Panel */
+.detail-panel { width:280px; background:var(--bg2); border-left:1px solid var(--border); overflow-y:auto; flex-shrink:0; padding:12px; display:none; }
+.detail-panel.visible { display:block; }
+.detail-panel h3 { font-size:13px; color:var(--accent); margin-bottom:8px; }
+.detail-row { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid var(--border); font-size:12px; }
+.detail-row .label { color:var(--fg2); }
+.detail-row .value { color:var(--fg); font-weight:500; text-align:right; max-width:160px; overflow:hidden; text-overflow:ellipsis; }
+
+/* Tab bar in SVG */
+.tab-bar { display:flex; gap:0; position:absolute; }
+.tab-btn { padding:4px 12px; font-size:11px; cursor:pointer; border:1px solid var(--border); border-bottom:none; background:var(--bg3); color:var(--fg2); border-radius:4px 4px 0 0; }
+.tab-btn.active { background:var(--accent); color:var(--bg); font-weight:600; }
+
+/* Empty state */
+.empty-state { display:flex; align-items:center; justify-content:center; flex:1; color:var(--fg2); font-size:14px; flex-direction:column; gap:8px; }
+.empty-state .icon { font-size:48px; opacity:.3; }
+
+/* Report badge */
+.report-badge { display:inline-block; padding:3px 10px; background:var(--yellow); color:var(--bg); font-size:11px; border-radius:4px; font-weight:600; }
+
+/* Zoom controls */
+.zoom-controls { position:absolute; bottom:12px; right:12px; display:flex; gap:4px; z-index:10; }
+.zoom-btn { width:32px; height:32px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--fg); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; }
+.zoom-btn:hover { background:var(--bg3); }
+
+/* Tooltip */
+.tooltip { position:fixed; background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:8px 12px; font-size:11px; color:var(--fg); pointer-events:none; z-index:1000; max-width:300px; box-shadow:0 4px 12px rgba(0,0,0,.4); }
+.tooltip .tt-name { font-weight:600; color:var(--accent); }
+.tooltip .tt-type { color:var(--fg2); }
+.tooltip .tt-events { margin-top:4px; color:var(--green); font-size:10px; }
+
+/* Event indicator */
+.event-indicator { cursor:pointer; }
+
+/* Event badges in detail panel */
+.events-section { margin-top:12px; }
+.events-section h4 { font-size:12px; color:var(--green); margin-bottom:6px; display:flex; align-items:center; gap:4px; }
+.event-item { margin-bottom:8px; padding:6px 8px; background:var(--bg3); border-radius:4px; border-left:3px solid var(--green); }
+.event-item .event-name { font-size:11px; font-weight:600; color:var(--fg); }
+.event-item .handler-name { font-size:10px; color:var(--fg2); margin-top:2px; }
+.event-item .calls-list { margin-top:4px; display:flex; flex-wrap:wrap; gap:3px; }
+.call-badge { display:inline-block; padding:1px 6px; border-radius:3px; font-size:9px; font-weight:600; }
+.call-badge.db_proc { background:#f38ba833; color:var(--red); }
+.call-badge.popup { background:#cba6f733; color:var(--mauve); }
+.call-badge.close { background:#f9e2af33; color:var(--yellow); }
+.call-badge.message { background:#94e2d533; color:var(--teal); }
+.call-badge.dialog_result { background:#fab38733; color:var(--peach); }
+.call-badge.grid_bind { background:#89b4fa33; color:var(--accent); }
+.call-badge.lookup_bind { background:#74c7ec33; color:var(--accent2); }
+.call-badge.perform_click { background:#a6e3a133; color:var(--green); }
+.call-badge.internal_call { background:#45475a66; color:var(--fg2); }
+
+/* Form events button */
+.form-events-btn { padding:4px 10px; border-radius:4px; border:1px solid var(--green); background:transparent; color:var(--green); cursor:pointer; font-size:11px; font-weight:600; transition:background .15s; }
+.form-events-btn:hover { background:var(--green); color:var(--bg); }
+.form-events-btn.active { background:var(--green); color:var(--bg); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>HNSMES Form Viewer</h1>
+  <span class="stats" id="stats"></span>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search forms (ID, title, description)...">
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar-modules" id="moduleList"></div>
+  <div class="sidebar-forms" id="formList"></div>
+  <div class="viewer" id="viewer">
+    <div class="viewer-header" id="viewerHeader" style="display:none;">
+      <span class="form-name" id="formName"></span>
+      <span class="form-info" id="formInfo"></span>
+      <button class="form-events-btn" id="formEventsBtn" style="display:none;" onclick="showFormEvents()">&#9889; Form Events</button>
+    </div>
+    <div class="viewer-body">
+      <div class="svg-container" id="svgContainer">
+        <div class="empty-state" id="emptyState">
+          <div class="icon">&#9634;</div>
+          <div>Select a form to visualize</div>
+        </div>
+        <div class="zoom-controls" id="zoomControls" style="display:none;">
+          <button class="zoom-btn" onclick="zoomIn()">+</button>
+          <button class="zoom-btn" onclick="zoomOut()">&minus;</button>
+          <button class="zoom-btn" onclick="zoomReset()">&#8634;</button>
+        </div>
+      </div>
+      <div class="detail-panel" id="detailPanel">
+        <h3>Control Details</h3>
+        <div id="detailContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip" style="display:none;"></div>
+
+<script>
+// ============================================================
+// DATA (injected by parse_designers.py)
+// ============================================================
+const FORMS = {{FORM_DATA_JSON}};
+
+// ============================================================
+// STATE
+// ============================================================
+let activeModule = null;
+let activeForm = null;
+let svgScale = 1;
+let svgPanX = 20, svgPanY = 20;
+let isPanning = false;
+let panStartX, panStartY, panOrigX, panOrigY;
+let activeTabIndices = {};
+
+// ============================================================
+// COLORS
+// ============================================================
+const CTRL_COLORS = {
+  GridControl: { fill:'#f9e2af33', stroke:'#f9e2af', label:'Grid' },
+  Button: { fill:'#a6e3a133', stroke:'#a6e3a1', label:'Btn' },
+  TextEdit: { fill:'#89b4fa22', stroke:'#89b4fa', label:'Text' },
+  MemoEdit: { fill:'#89b4fa22', stroke:'#89b4fa', label:'Memo' },
+  SpinEdit: { fill:'#74c7ec22', stroke:'#74c7ec', label:'Spin' },
+  DateEdit: { fill:'#cba6f722', stroke:'#cba6f7', label:'Date' },
+  DateRangeControl: { fill:'#cba6f722', stroke:'#cba6f7', label:'DateRange' },
+  ComboBox: { fill:'#fab38722', stroke:'#fab387', label:'Combo' },
+  GridLookUpEdit: { fill:'#fab38722', stroke:'#fab387', label:'Lookup' },
+  LookUpEdit: { fill:'#fab38722', stroke:'#fab387', label:'Lookup' },
+  CheckEdit: { fill:'#94e2d522', stroke:'#94e2d5', label:'Check' },
+  RadioGroup: { fill:'#94e2d522', stroke:'#94e2d5', label:'Radio' },
+  PictureEdit: { fill:'#f38ba822', stroke:'#f38ba8', label:'Image' },
+  Unknown: { fill:'#45475a44', stroke:'#45475a', label:'?' },
+};
+
+// ============================================================
+// MODULES
+// ============================================================
+const MODULE_ORDER = ['COM','SYS','MST','MAT','PRD','MNT','OSC','SAL','RPT','Base','PopUp','Unknown'];
+const MODULE_NAMES = {
+  COM:'Common', SYS:'System', MST:'Master', MAT:'Material',
+  PRD:'Production', MNT:'Maintenance', OSC:'Outsourcing',
+  SAL:'Sales', RPT:'Report',
+};
+
+function getModules() {
+  const mods = {};
+  FORMS.forEach(f => {
+    const m = f.module || 'Unknown';
+    if (!mods[m]) mods[m] = [];
+    mods[m].push(f);
+  });
+  return mods;
+}
+
+// ============================================================
+// RENDER MODULES
+// ============================================================
+function renderModules() {
+  const mods = getModules();
+  const el = document.getElementById('moduleList');
+  const sorted = Object.keys(mods).sort((a,b) => {
+    const ia = MODULE_ORDER.indexOf(a), ib = MODULE_ORDER.indexOf(b);
+    return (ia===-1?99:ia)-(ib===-1?99:ib);
+  });
+  el.innerHTML = sorted.map(m =>
+    `<div class="mod-item${activeModule===m?' active':''}" data-mod="${m}" onclick="selectModule('${m}')">
+      <span>[${m}]</span>
+      <span class="badge">${mods[m].length}</span>
+    </div>`
+  ).join('');
+  document.getElementById('stats').textContent = `${FORMS.length} forms | ${sorted.length} modules`;
+}
+
+// ============================================================
+// RENDER FORM LIST
+// ============================================================
+function renderFormList(filterText) {
+  const el = document.getElementById('formList');
+  let forms = FORMS;
+
+  if (activeModule) {
+    forms = forms.filter(f => f.module === activeModule);
+  }
+  if (filterText) {
+    const q = filterText.toLowerCase();
+    forms = forms.filter(f =>
+      f.id.toLowerCase().includes(q) ||
+      (f.title||'').toLowerCase().includes(q) ||
+      (f.description||'').toLowerCase().includes(q)
+    );
+  }
+
+  forms.sort((a,b) => a.id.localeCompare(b.id));
+
+  el.innerHTML = forms.map(f => {
+    const tagClass = f.layoutType==='Report'?'tag-report':
+      f.layoutType==='Tabbed'?'tag-tabbed':
+      f.layoutType==='Master-Detail'?'tag-master-detail':'tag-simple';
+    return `<div class="form-item${activeForm&&activeForm.id===f.id?' active':''}" data-id="${f.id}" onclick="selectForm('${f.id}')">
+      <div class="form-id">${f.id}</div>
+      <div class="form-title">${f.title||f.id}</div>
+      <div class="form-meta">
+        <span class="tag ${tagClass}">${f.layoutType}</span>
+        ${f.controlCount?`<span>${f.controlCount} ctrls</span>`:(f.reportControls&&f.reportControls.length?`<span>${f.reportControls.length} ctrls</span>`:'')}
+      </div>
+      ${f.description?`<div class="form-title">${f.description}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// SELECT MODULE
+// ============================================================
+function selectModule(mod) {
+  activeModule = activeModule===mod ? null : mod;
+  renderModules();
+  renderFormList(document.getElementById('searchInput').value);
+}
+
+// ============================================================
+// SELECT FORM
+// ============================================================
+function selectForm(id) {
+  activeForm = FORMS.find(f => f.id===id);
+  activeTabIndices = {};
+  renderFormList(document.getElementById('searchInput').value);
+  renderViewer();
+}
+
+// ============================================================
+// RENDER VIEWER
+// ============================================================
+function renderViewer() {
+  const header = document.getElementById('viewerHeader');
+  const container = document.getElementById('svgContainer');
+  const emptyState = document.getElementById('emptyState');
+  const zoomControls = document.getElementById('zoomControls');
+  const detailPanel = document.getElementById('detailPanel');
+
+  if (!activeForm) {
+    header.style.display='none';
+    emptyState.style.display='flex';
+    zoomControls.style.display='none';
+    detailPanel.classList.remove('visible');
+    // Remove old SVG
+    const oldSvg = container.querySelector('svg');
+    if (oldSvg) oldSvg.remove();
+    return;
+  }
+
+  header.style.display='flex';
+  emptyState.style.display='none';
+  zoomControls.style.display='flex';
+  detailPanel.classList.remove('visible');
+
+  document.getElementById('formName').textContent = activeForm.id;
+  const isRpt = activeForm.isReport || activeForm.layoutType === 'Report';
+  const sizeStr = isRpt
+    ? `${(activeForm.pageSize||{}).width||0}x${(activeForm.pageSize||{}).height||0}`
+    : `${(activeForm.clientSize||{}).width||0}x${(activeForm.clientSize||{}).height||0}`;
+  const info = [activeForm.title, activeForm.layoutType, sizeStr];
+  if (activeForm.description) info.push(activeForm.description);
+  if (isRpt && activeForm.dataMember) info.push(`Data: ${activeForm.dataMember}`);
+  document.getElementById('formInfo').textContent = info.join(' | ');
+
+  // Form Events 버튼 표시
+  const formEventsBtn = document.getElementById('formEventsBtn');
+  const fe = activeForm.formEvents || [];
+  if (fe.length > 0) {
+    formEventsBtn.style.display = 'inline-block';
+    formEventsBtn.textContent = `\u26A1 Form Events (${fe.length})`;
+    formEventsBtn.classList.remove('active');
+  } else {
+    formEventsBtn.style.display = 'none';
+  }
+
+  // Report form
+  if (activeForm.isReport || activeForm.layoutType === 'Report') {
+    const oldSvg = container.querySelector('svg');
+    if (oldSvg) oldSvg.remove();
+    const ctrls = activeForm.reportControls || [];
+    if (ctrls.length > 0) {
+      // RPT 시각적 미리보기 렌더링
+      svgScale = 1; svgPanX = 20; svgPanY = 20;
+      renderReportSVG();
+      return;
+    }
+    emptyState.style.display='flex';
+    emptyState.innerHTML = `<div class="report-badge">Report (XtraReports)</div>
+      <div>${activeForm.title || activeForm.id}</div>
+      <div style="font-size:12px;color:var(--fg2);margin-top:4px;">No report controls found.</div>
+      <div style="font-size:11px;color:var(--fg2);margin-top:2px;">${activeForm.filepath||''}</div>`;
+    zoomControls.style.display='none';
+    return;
+  }
+
+  if (!activeForm.layoutTree) {
+    const oldSvg = container.querySelector('svg');
+    if (oldSvg) oldSvg.remove();
+    emptyState.style.display='flex';
+    emptyState.innerHTML = `<div class="icon">&#9888;</div><div>No layout tree found</div>`;
+    zoomControls.style.display='none';
+    return;
+  }
+
+  // Reset pan/zoom
+  svgScale = 1;
+  svgPanX = 20;
+  svgPanY = 20;
+
+  renderSVG();
+}
+
+// ============================================================
+// SVG RENDERING
+// ============================================================
+function renderSVG() {
+  const container = document.getElementById('svgContainer');
+  const oldSvg = container.querySelector('svg');
+  if (oldSvg) oldSvg.remove();
+
+  const form = activeForm;
+  const tree = form.layoutTree;
+  if (!tree) return;
+
+  const W = form.clientSize.width || 884;
+  const H = form.clientSize.height || 552;
+  const TITLE_H = 30;
+  const totalH = H + TITLE_H + 40;
+  const totalW = W + 40;
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', '100%');
+  svg.setAttribute('height', '100%');
+  svg.setAttribute('viewBox', `0 0 ${totalW} ${totalH}`);
+  svg.style.background = 'transparent';
+
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('transform', `translate(${svgPanX},${svgPanY}) scale(${svgScale})`);
+  g.setAttribute('id', 'svgMainGroup');
+  svg.appendChild(g);
+
+  // Form window frame
+  addRect(g, 0, 0, W, H + TITLE_H, '#313244', '#45475a', 1, 4);
+  // Title bar
+  addRect(g, 0, 0, W, TITLE_H, '#45475a', '#585b70', 1, 4);
+  addText(g, 10, TITLE_H/2+4, form.title || form.id, 13, '#cdd6f4', 'bold');
+
+  // Layout type badge
+  const badgeColors = { Simple:'#a6e3a1', 'Master-Detail':'#89b4fa', Tabbed:'#cba6f7' };
+  const bc = badgeColors[form.layoutType] || '#cdd6f4';
+  addText(g, W - 10, TITLE_H/2+4, form.layoutType, 10, bc, 'normal', 'end');
+
+  // Render tree
+  renderNode(g, tree, 0, TITLE_H, W, H, 0);
+
+  container.appendChild(svg);
+  setupPanZoom(svg);
+}
+
+// ============================================================
+// RPT REPORT RENDERING
+// ============================================================
+const RPT_COLORS = {
+  Label:      { fill:'#89b4fa22', stroke:'#89b4fa', label:'Label' },
+  BarCode:    { fill:'#a6e3a133', stroke:'#a6e3a1', label:'Barcode' },
+  PictureBox: { fill:'#f38ba822', stroke:'#f38ba8', label:'Image' },
+  Line:       { fill:'transparent', stroke:'#585b70', label:'Line' },
+  Table:      { fill:'#f9e2af22', stroke:'#f9e2af', label:'Table' },
+  TableCell:  { fill:'#fab38722', stroke:'#fab387', label:'Cell' },
+};
+
+function renderReportSVG() {
+  const container = document.getElementById('svgContainer');
+  const emptyState = document.getElementById('emptyState');
+  const zoomControls = document.getElementById('zoomControls');
+  emptyState.style.display = 'none';
+  zoomControls.style.display = 'flex';
+
+  const oldSvg = container.querySelector('svg');
+  if (oldSvg) oldSvg.remove();
+
+  const form = activeForm;
+  const ps = form.pageSize || { width: 700, height: 400 };
+  const TITLE_H = 36;
+  const INFO_H = 20;
+  const PAD = 20;
+  const totalW = ps.width + PAD * 2;
+  const totalH = ps.height + TITLE_H + INFO_H + PAD * 2;
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', '100%');
+  svg.setAttribute('height', '100%');
+  svg.setAttribute('viewBox', `0 0 ${totalW} ${totalH}`);
+  svg.style.background = 'transparent';
+
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('transform', `translate(${svgPanX},${svgPanY}) scale(${svgScale})`);
+  g.setAttribute('id', 'svgMainGroup');
+  svg.appendChild(g);
+
+  // 페이지 배경
+  addRect(g, PAD, PAD, ps.width, ps.height + TITLE_H + INFO_H, '#1e1e2e', '#45475a', 1.5, 4);
+
+  // 타이틀바
+  addRect(g, PAD, PAD, ps.width, TITLE_H, '#45475a', '#585b70', 1, 4);
+  addText(g, PAD + 10, PAD + TITLE_H / 2 + 5, form.title || form.id, 14, '#cdd6f4', 'bold');
+  // Report 뱃지
+  addRect(g, PAD + ps.width - 80, PAD + 7, 70, 22, '#f9e2af', '#f9e2af', 0, 4);
+  addText(g, PAD + ps.width - 45, PAD + 23, 'Report', 11, '#1e1e2e', 'bold', 'middle');
+
+  // 정보 바
+  const infoY = PAD + TITLE_H;
+  addRect(g, PAD, infoY, ps.width, INFO_H, '#313244', '#45475a', 0.5, 0);
+  const infoText = `${ps.width}x${ps.height}  |  DataMember: ${form.dataMember || 'N/A'}  |  ${(form.reportControls||[]).length} controls`;
+  addText(g, PAD + 8, infoY + 14, infoText, 10, '#a6adc8');
+
+  // 컨트롤 영역 시작
+  const contentY = infoY + INFO_H;
+  const controls = form.reportControls || [];
+
+  controls.forEach(ctrl => {
+    const colors = RPT_COLORS[ctrl.type] || RPT_COLORS.Label;
+    const cx = PAD + ctrl.location.x;
+    const cy = contentY + ctrl.location.y;
+    const cw = ctrl.size.width;
+    const ch = ctrl.size.height;
+
+    if (ctrl.type === 'Line') {
+      // XRLine: 수평/수직 선
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', cx);
+      line.setAttribute('y1', cy);
+      line.setAttribute('x2', cx + cw);
+      line.setAttribute('y2', cy + ch);
+      line.setAttribute('stroke', colors.stroke);
+      line.setAttribute('stroke-width', '1.5');
+      g.appendChild(line);
+      return;
+    }
+
+    // 컨트롤 직사각형
+    const rect = addRect(g, cx, cy, cw, ch, colors.fill, colors.stroke, 0.8, 2);
+    rect.setAttribute('data-rpt-ctrl', JSON.stringify(ctrl));
+    rect.style.cursor = 'pointer';
+    rect.addEventListener('mouseenter', onRptCtrlHover);
+    rect.addEventListener('mouseleave', onCtrlLeave);
+    rect.addEventListener('click', onRptCtrlClick);
+
+    // 컨트롤 내부 표시
+    if (cw > 10 && ch > 8) {
+      if (ctrl.type === 'BarCode') {
+        renderBarCodePattern(g, cx, cy, cw, ch, ctrl.symbology);
+      } else {
+        // 레이블 표시: 바인딩 또는 정적 텍스트
+        const displayText = ctrl.binding
+          ? ctrl.binding.split('.').pop()
+          : (ctrl.text || ctrl.name);
+        if (cw > 20 && ch > 10) {
+          const label = truncText(displayText, cw - 6, 9);
+          const txt = addText(g, cx + cw / 2, cy + ch / 2 + 3, label, Math.min(9, ch - 4), colors.stroke, 'normal', 'middle');
+          txt.style.pointerEvents = 'none';
+        }
+      }
+    }
+  });
+
+  container.appendChild(svg);
+  setupPanZoom(svg);
+}
+
+function renderBarCodePattern(g, x, y, w, h, symbology) {
+  const sym = symbology || 'Code128';
+  const patternG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  patternG.style.pointerEvents = 'none';
+
+  if (sym === 'QRCode' || sym === 'DataMatrix') {
+    // 격자 패턴
+    const gridSize = Math.min(w, h) * 0.7;
+    const startX = x + (w - gridSize) / 2;
+    const startY = y + (h - gridSize) / 2 - 4;
+    const cellSize = gridSize / 7;
+    for (let r = 0; r < 7; r++) {
+      for (let c = 0; c < 7; c++) {
+        // 체커보드 + 포지션 마커
+        const isMarker = (r < 2 && c < 2) || (r < 2 && c > 4) || (r > 4 && c < 2);
+        const fill = isMarker || ((r + c) % 3 === 0) ? '#a6e3a1' : '#a6e3a133';
+        addRect(patternG, startX + c * cellSize, startY + r * cellSize,
+          cellSize - 0.5, cellSize - 0.5, fill, 'none', 0, 0);
+      }
+    }
+    const label = sym === 'QRCode' ? 'QR' : 'DM';
+    addText(patternG, x + w / 2, y + h - 3, label, 8, '#a6e3a1', '600', 'middle');
+  } else {
+    // Code128: 수직 줄무늬
+    const barW = Math.max(1, w * 0.6 / 15);
+    const startX = x + w * 0.2;
+    const barH = h * 0.6;
+    const startY = y + (h - barH) / 2 - 4;
+    for (let i = 0; i < 15; i++) {
+      const fill = i % 2 === 0 ? '#a6e3a1' : 'transparent';
+      addRect(patternG, startX + i * barW, startY, barW - 0.3, barH, fill, 'none', 0, 0);
+    }
+    addText(patternG, x + w / 2, y + h - 3, 'CODE128', 7, '#a6e3a1', '600', 'middle');
+  }
+
+  g.appendChild(patternG);
+}
+
+function onRptCtrlHover(e) {
+  const data = JSON.parse(e.target.getAttribute('data-rpt-ctrl'));
+  const tooltip = document.getElementById('tooltip');
+  const bindingLine = data.binding ? `<div style="color:#a6e3a1;">Binding: ${data.binding}</div>` : '';
+  const symLine = data.symbology ? `<div style="color:#f9e2af;">Symbology: ${data.symbology}</div>` : '';
+  const fontLine = data.font ? `<div>Font: ${data.font.name} ${data.font.size}pt</div>` : '';
+  tooltip.innerHTML = `<div class="tt-name">${data.name}</div>
+    <div class="tt-type">${data.type}</div>
+    ${data.text ? `<div>Text: "${data.text}"</div>` : ''}
+    ${bindingLine}${symLine}${fontLine}
+    <div>Pos: (${data.location.x.toFixed(1)}, ${data.location.y.toFixed(1)}) Size: ${data.size.width.toFixed(1)}x${data.size.height.toFixed(1)}</div>`;
+  tooltip.style.display = 'block';
+  tooltip.style.left = (e.clientX + 12) + 'px';
+  tooltip.style.top = (e.clientY + 12) + 'px';
+  e.target.setAttribute('stroke-width', '2.5');
+}
+
+function onRptCtrlClick(e) {
+  const data = JSON.parse(e.target.getAttribute('data-rpt-ctrl'));
+  const panel = document.getElementById('detailPanel');
+  const content = document.getElementById('detailContent');
+  panel.classList.add('visible');
+
+  const btn = document.getElementById('formEventsBtn');
+  if (btn) btn.classList.remove('active');
+
+  const rows = [
+    ['Name', data.name],
+    ['Type', data.type],
+    ['Band', data.band || 'Detail'],
+    ['Location', `(${data.location.x.toFixed(1)}, ${data.location.y.toFixed(1)})`],
+    ['Size', `${data.size.width.toFixed(1)} x ${data.size.height.toFixed(1)}`],
+  ];
+  if (data.binding) rows.push(['Binding', data.binding]);
+  if (data.text) rows.push(['Text', data.text]);
+  if (data.font) rows.push(['Font', `${data.font.name}, ${data.font.size}pt`]);
+  if (data.alignment) rows.push(['Alignment', data.alignment]);
+  if (data.symbology) rows.push(['Symbology', data.symbology]);
+  if (data.showText !== null && data.showText !== undefined) rows.push(['ShowText', data.showText ? 'Yes' : 'No']);
+
+  content.innerHTML = rows.map(([l, v]) =>
+    `<div class="detail-row"><span class="label">${l}</span><span class="value" title="${v}">${v}</span></div>`
+  ).join('');
+}
+
+function renderNode(g, node, x, y, w, h, depth) {
+  if (!node || w < 2 || h < 2) return;
+  if (node.visibility === 'Never') return;
+
+  const type = node.type;
+
+  if (type === 'LayoutControlGroup') {
+    const showBorder = node.groupBordersVisible !== false;
+    const showText = node.text && node.textVisible !== false && showBorder;
+    const headerH = showText ? 20 : 0;
+    const pad = showBorder ? 4 : 0;
+
+    if (showBorder) {
+      addRect(g, x, y, w, h, 'transparent', '#585b70', 1, 2, true);
+      if (showText) {
+        addRect(g, x, y, w, headerH, '#45475a44', '#585b70', 0.5, 2);
+        addText(g, x+6, y+14, node.text, 10, '#a6adc8', '600');
+      }
+    }
+
+    // Render children with auto-layout
+    const innerX = x + pad;
+    const innerY = y + pad + headerH;
+    const innerW = w - pad*2;
+    const innerH = h - pad*2 - headerH;
+
+    layoutChildren(g, node.children, innerX, innerY, innerW, innerH, depth);
+  }
+  else if (type === 'TabbedControlGroup') {
+    const tabH = 26;
+    const tabPages = node.tabPages || [];
+    const tabKey = node.name;
+    const activeIdx = activeTabIndices[tabKey] || 0;
+
+    // Tab container
+    addRect(g, x, y, w, h, '#1e1e2e88', '#585b70', 1, 2);
+
+    // Tab headers
+    const tabW = Math.min(120, (w-4) / Math.max(tabPages.length,1));
+    tabPages.forEach((tab, i) => {
+      const tx = x + 2 + i*tabW;
+      const isActive = i === activeIdx;
+      const fill = isActive ? '#89b4fa' : '#45475a';
+      const textColor = isActive ? '#1e1e2e' : '#a6adc8';
+      const rect = addRect(g, tx, y+2, tabW-2, tabH-2, fill, '#585b70', 0.5, 3);
+      rect.style.cursor = 'pointer';
+      rect.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activeTabIndices[tabKey] = i;
+        renderSVG();
+      });
+      const label = tab.text || `Tab ${i+1}`;
+      const txt = addText(g, tx+tabW/2-1, y+tabH/2+3, truncText(label, tabW-10, 9), 9, textColor, isActive?'600':'normal', 'middle');
+      txt.style.pointerEvents = 'none';
+    });
+
+    // Active tab content
+    if (tabPages[activeIdx]) {
+      const contentY = y + tabH + 2;
+      const contentH = h - tabH - 4;
+      renderNode(g, tabPages[activeIdx], x+2, contentY, w-4, contentH, depth+1);
+    }
+  }
+  else if (type === 'SplitterItem') {
+    // Vertical or horizontal splitter
+    const isVert = node.size && node.size.height > node.size.width;
+    if (isVert) {
+      addRect(g, x, y, Math.max(w,5), h, '#45475a88', '#585b70', 1, 0);
+      // grip dots
+      for (let i=0; i<3; i++) {
+        addCircle(g, x+w/2, y+h/2-8+i*8, 2, '#585b70');
+      }
+    } else {
+      addRect(g, x, y, w, Math.max(h,5), '#45475a88', '#585b70', 1, 0);
+    }
+  }
+  else if (type === 'EmptySpaceItem') {
+    // Invisible
+  }
+  else if (type === 'SimpleSeparator') {
+    addRect(g, x, y, w, Math.max(h,2), '#585b7066', '#585b70', 0.5, 0);
+  }
+  else if (type === 'SimpleLabelItem') {
+    if (node.text && node.text.trim()) {
+      addText(g, x+4, y+h/2+4, truncText(node.text, w-8, 10), 10, '#a6adc8');
+    }
+  }
+  else if (type === 'LayoutControlItem') {
+    renderLayoutControlItem(g, node, x, y, w, h, depth);
+  }
+}
+
+function renderLayoutControlItem(g, node, x, y, w, h, depth) {
+  const hasLabel = node.textVisible !== false && node.text;
+  const textSize = node.textSize || { width: 80, height: 14 };
+  const ttcd = 5; // textToControlDistance default
+  let labelW = hasLabel ? (textSize.width + ttcd) : 0;
+  if (labelW > w * 0.6) labelW = Math.floor(w * 0.4);
+
+  const ctrlRef = node.controlRef;
+  const ctrlType = ctrlRef ? ctrlRef.type : 'Unknown';
+  const colors = CTRL_COLORS[ctrlType] || CTRL_COLORS.Unknown;
+
+  // Label
+  if (hasLabel && labelW > 0) {
+    addText(g, x+2, y+h/2+4, truncText(node.text, labelW-4, 10), 10, '#a6adc8');
+  }
+
+  // Control area
+  const cx = x + labelW;
+  const cw = w - labelW;
+  if (cw > 2 && h > 2) {
+    const rect = addRect(g, cx, y+1, cw, h-2, colors.fill, colors.stroke, 0.8, 2);
+    const events = ctrlRef?.events || [];
+    rect.setAttribute('data-ctrl', JSON.stringify({
+      name: ctrlRef?.name || node.name,
+      type: ctrlType,
+      csharpType: ctrlRef?.csharpType || node.csharpType || '',
+      text: node.text || '',
+      size: ctrlRef?.size || node.size,
+      location: ctrlRef?.location || node.location,
+      events: events,
+    }));
+    rect.style.cursor = 'pointer';
+    rect.addEventListener('mouseenter', onCtrlHover);
+    rect.addEventListener('mouseleave', onCtrlLeave);
+    rect.addEventListener('click', onCtrlClick);
+
+    // Control type indicator
+    const displayName = ctrlRef ? ctrlRef.name : (node.text || node.name);
+    if (cw > 30 && h > 10) {
+      const label = truncText(displayName, cw-6, 9);
+      const txt = addText(g, cx+cw/2, y+h/2+3, label, 9, colors.stroke, 'normal', 'middle');
+      txt.style.pointerEvents = 'none';
+    }
+
+    // Event indicator (녹색 번개 아이콘)
+    if (events.length > 0 && cw > 12 && h > 10) {
+      const indR = 7;
+      const indX = cx + cw - indR - 2;
+      const indY = y + indR + 2;
+      const circle = addCircle(g, indX, indY, indR, '#a6e3a1');
+      circle.setAttribute('class', 'event-indicator');
+      circle.style.pointerEvents = 'none';
+      const bolt = addText(g, indX, indY+3.5, '\u26A1', 9, '#1e1e2e', 'bold', 'middle');
+      bolt.style.pointerEvents = 'none';
+    }
+  }
+}
+
+function layoutChildren(g, children, x, y, w, h, depth) {
+  if (!children || children.length === 0) return;
+
+  // Use Location/Size data to position children
+  // First, find bounding box of children locations
+  const positioned = children.filter(c => c.location && c.size);
+  const unpositioned = children.filter(c => !c.location || !c.size);
+
+  if (positioned.length > 0) {
+    // Find min x,y to offset
+    let minX = Infinity, minY = Infinity, maxR = 0, maxB = 0;
+    positioned.forEach(c => {
+      minX = Math.min(minX, c.location.x);
+      minY = Math.min(minY, c.location.y);
+      maxR = Math.max(maxR, c.location.x + c.size.width);
+      maxB = Math.max(maxB, c.location.y + c.size.height);
+    });
+
+    const srcW = maxR - minX || 1;
+    const srcH = maxB - minY || 1;
+    const scaleX = w / srcW;
+    const scaleY = h / srcH;
+
+    positioned.forEach(c => {
+      const cx = x + (c.location.x - minX) * scaleX;
+      const cy = y + (c.location.y - minY) * scaleY;
+      const cw = c.size.width * scaleX;
+      const ch = c.size.height * scaleY;
+      renderNode(g, c, cx, cy, cw, ch, depth+1);
+    });
+  }
+
+  // Unpositioned fallback: stack vertically
+  if (unpositioned.length > 0 && positioned.length === 0) {
+    const slotH = h / unpositioned.length;
+    unpositioned.forEach((c, i) => {
+      renderNode(g, c, x, y + i*slotH, w, slotH, depth+1);
+    });
+  }
+}
+
+// ============================================================
+// SVG HELPERS
+// ============================================================
+function addRect(g, x, y, w, h, fill, stroke, strokeW, r, dashed) {
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', Math.max(w,0)); rect.setAttribute('height', Math.max(h,0));
+  rect.setAttribute('fill', fill||'none');
+  rect.setAttribute('stroke', stroke||'none');
+  rect.setAttribute('stroke-width', strokeW||1);
+  if (r) rect.setAttribute('rx', r);
+  if (dashed) rect.setAttribute('stroke-dasharray', '4,3');
+  g.appendChild(rect);
+  return rect;
+}
+
+function addText(g, x, y, text, size, fill, weight, anchor) {
+  const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  t.setAttribute('x', x); t.setAttribute('y', y);
+  t.setAttribute('font-size', size||12);
+  t.setAttribute('fill', fill||'#cdd6f4');
+  t.setAttribute('font-family', "'Segoe UI',system-ui,sans-serif");
+  if (weight) t.setAttribute('font-weight', weight);
+  if (anchor) t.setAttribute('text-anchor', anchor);
+  t.textContent = text;
+  g.appendChild(t);
+  return t;
+}
+
+function addCircle(g, cx, cy, r, fill) {
+  const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('cx', cx); c.setAttribute('cy', cy);
+  c.setAttribute('r', r); c.setAttribute('fill', fill);
+  g.appendChild(c);
+  return c;
+}
+
+function truncText(text, maxW, fontSize) {
+  const charW = fontSize * 0.55;
+  const maxChars = Math.floor(maxW / charW);
+  if (text.length <= maxChars) return text;
+  return text.substring(0, Math.max(maxChars-1, 1)) + '...';
+}
+
+// ============================================================
+// TOOLTIP & DETAIL
+// ============================================================
+function onCtrlHover(e) {
+  const data = JSON.parse(e.target.getAttribute('data-ctrl'));
+  const tooltip = document.getElementById('tooltip');
+  const events = data.events || [];
+  let eventsHtml = '';
+  if (events.length > 0) {
+    const eventNames = events.map(ev => ev.event).join(', ');
+    eventsHtml = `<div class="tt-events">\u26A1 ${events.length} event${events.length>1?'s':''}: ${eventNames}</div>`;
+  }
+  tooltip.innerHTML = `<div class="tt-name">${data.name}</div>
+    <div class="tt-type">${data.type} (${data.csharpType})</div>
+    ${data.text?`<div>Label: ${data.text}</div>`:''}
+    ${data.size?`<div>Size: ${data.size.width}x${data.size.height}</div>`:''}
+    ${eventsHtml}`;
+  tooltip.style.display = 'block';
+  tooltip.style.left = (e.clientX + 12) + 'px';
+  tooltip.style.top = (e.clientY + 12) + 'px';
+  e.target.setAttribute('stroke-width', '2.5');
+}
+
+function onCtrlLeave(e) {
+  document.getElementById('tooltip').style.display = 'none';
+  e.target.setAttribute('stroke-width', '0.8');
+}
+
+function renderCallBadge(call) {
+  const labels = {
+    db_proc: 'DB', popup: 'Popup', close: 'Close', message: 'Msg',
+    dialog_result: 'Result', grid_bind: 'Grid', lookup_bind: 'Lookup',
+    perform_click: 'Click', internal_call: 'Call',
+  };
+  const label = labels[call.type] || call.type;
+  return `<span class="call-badge ${call.type}" title="${call.detail}">${label}: ${call.detail}</span>`;
+}
+
+function renderEventsSection(events, title) {
+  if (!events || events.length === 0) return '';
+  let html = `<div class="events-section"><h4>\u26A1 ${title} (${events.length})</h4>`;
+  events.forEach(ev => {
+    const callsHtml = (ev.calls || []).map(renderCallBadge).join('');
+    html += `<div class="event-item">
+      <div class="event-name">${ev.event}</div>
+      <div class="handler-name">${ev.handler}()</div>
+      ${callsHtml ? `<div class="calls-list">${callsHtml}</div>` : ''}
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function onCtrlClick(e) {
+  const data = JSON.parse(e.target.getAttribute('data-ctrl'));
+  const panel = document.getElementById('detailPanel');
+  const content = document.getElementById('detailContent');
+  panel.classList.add('visible');
+
+  // Form Events 버튼 비활성화
+  const btn = document.getElementById('formEventsBtn');
+  if (btn) btn.classList.remove('active');
+
+  const rows = [
+    ['Name', data.name],
+    ['Type', data.type],
+    ['C# Type', data.csharpType],
+    ['Label', data.text || '-'],
+    ['Size', data.size ? `${data.size.width} x ${data.size.height}` : '-'],
+    ['Location', data.location ? `(${data.location.x}, ${data.location.y})` : '-'],
+  ];
+
+  let html = rows.map(([l,v]) =>
+    `<div class="detail-row"><span class="label">${l}</span><span class="value">${v}</span></div>`
+  ).join('');
+
+  // 이벤트 섹션
+  html += renderEventsSection(data.events, 'Events');
+
+  content.innerHTML = html;
+}
+
+// ============================================================
+// PAN & ZOOM
+// ============================================================
+function setupPanZoom(svg) {
+  svg.addEventListener('mousedown', (e) => {
+    if (e.target.style.cursor === 'pointer') return;
+    isPanning = true;
+    panStartX = e.clientX; panStartY = e.clientY;
+    panOrigX = svgPanX; panOrigY = svgPanY;
+  });
+  svg.addEventListener('mousemove', (e) => {
+    if (!isPanning) return;
+    svgPanX = panOrigX + (e.clientX - panStartX) / svgScale;
+    svgPanY = panOrigY + (e.clientY - panStartY) / svgScale;
+    updateTransform();
+    // Also move tooltip
+    const tooltip = document.getElementById('tooltip');
+    if (tooltip.style.display !== 'none') {
+      tooltip.style.left = (e.clientX + 12) + 'px';
+      tooltip.style.top = (e.clientY + 12) + 'px';
+    }
+  });
+  svg.addEventListener('mouseup', () => isPanning = false);
+  svg.addEventListener('mouseleave', () => isPanning = false);
+  svg.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    svgScale = Math.max(0.2, Math.min(5, svgScale * delta));
+    updateTransform();
+  }, { passive: false });
+}
+
+function updateTransform() {
+  const g = document.getElementById('svgMainGroup');
+  if (g) g.setAttribute('transform', `translate(${svgPanX},${svgPanY}) scale(${svgScale})`);
+}
+
+function zoomIn() { svgScale = Math.min(5, svgScale * 1.2); updateTransform(); }
+function zoomOut() { svgScale = Math.max(0.2, svgScale / 1.2); updateTransform(); }
+function zoomReset() { svgScale = 1; svgPanX = 20; svgPanY = 20; updateTransform(); }
+
+// ============================================================
+// FORM EVENTS
+// ============================================================
+function showFormEvents() {
+  if (!activeForm || !activeForm.formEvents) return;
+  const panel = document.getElementById('detailPanel');
+  const content = document.getElementById('detailContent');
+  const btn = document.getElementById('formEventsBtn');
+  btn.classList.toggle('active');
+
+  if (!btn.classList.contains('active')) {
+    panel.classList.remove('visible');
+    return;
+  }
+
+  panel.classList.add('visible');
+  content.innerHTML = `<div style="margin-bottom:8px;font-size:12px;color:var(--fg2);">Form: ${activeForm.id}</div>`
+    + renderEventsSection(activeForm.formEvents, 'Form Events');
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const q = e.target.value;
+  // If searching, show all modules
+  if (q) activeModule = null;
+  renderModules();
+  renderFormList(q);
+});
+
+// ============================================================
+// INIT
+// ============================================================
+renderModules();
+renderFormList();
+</script>
+</body>
+</html>
