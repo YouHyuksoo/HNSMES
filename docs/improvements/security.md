@@ -61,7 +61,7 @@ public class DatabaseConfig
 {
     // 위험: 소스 코드에 비밀번호 노출
     public const string ConnectionString = 
-        "Data Source=ORACLE_SERVER;User Id=HNS_ADMIN;Password=admin1234!;";
+        "Data Source=ORACLE_SERVER;User Id=DB_ADMIN;Password=********;";
     
     public static OracleConnection GetConnection()
     {

@@ -40,6 +40,9 @@ ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 
+# MkDocs build output
+site/
+
 # Misc
 *.tmp
 *.temp

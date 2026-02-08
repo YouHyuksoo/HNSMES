@@ -5,7 +5,7 @@
 | 항목 | 값 |
 |------|-----|
 | **Site Name** | ESSDB |
-| **Host** | 10.2.30.7 |
+| **Host** | 10.x.x.7 |
 | **Port** | 1522 |
 | **Service** | CDBHNSMES |
 | **User** | MESUSER |

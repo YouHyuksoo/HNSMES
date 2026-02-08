@@ -30,7 +30,7 @@
 ## 2. 데이터베이스 분석 및 연결
 
 ### 2.1 Oracle 연결 설정
-- **Host**: 10.2.30.7
+- **Host**: 10.x.x.7
 - **Port**: 1522
 - **Service**: CDBHNSMES
 - **User**: MESUSER

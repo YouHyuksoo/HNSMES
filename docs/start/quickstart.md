@@ -97,17 +97,17 @@ HNSMES/
 public static class Global_Variable
 {
     // 데이터베이스 서버 설정
-    public static string strOracle_IP = "10.2.30.7";
+    public static string strOracle_IP = "10.x.x.7";
     public static string strOracle_Port = "1522";
     public static string strOracle_SID = "CDBHNSMES";
     public static string strOracle_User = "MESUSER";
-    public static string strOracle_Pass = "mesuser";  // 암호화 권장
-    
+    public static string strOracle_Pass = "********";  // 암호화 권장
+
     // WCF 서비스 설정
-    public static string strWCF_Address = "net.tcp://10.2.30.7:8101/WCF_SERVICE";
-    
+    public static string strWCF_Address = "net.tcp://10.x.x.7:8101/WCF_SERVICE";
+
     // WebService 설정 (레거시)
-    public static string strWS_URL = "http://10.2.30.7:8807/WebService.asmx";
+    public static string strWS_URL = "http://10.x.x.7:8807/WebService.asmx";
 }
 ```
 

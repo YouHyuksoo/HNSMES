@@ -105,7 +105,7 @@
 │                            DATABASE LAYER                                    │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  Oracle Database (10.2.30.7:1522)                                   │   │
+│  │  Oracle Database (10.x.x.7:1522)                                   │   │
 │  │  • Service: CDBHNSMES                                              │   │
 │  │  • Schema: MESUSER                                                 │   │
 │  │  • Packages: 31개                                                  │   │
@@ -318,13 +318,13 @@ HAENGSUNG_HNSMES_UI/
 
 ```yaml
 Primary DB (ESSDB):
-  Host: 10.2.30.7
+  Host: 10.x.x.7
   Port: 1522
   Service: CDBHNSMES
   User: MESUSER
   
 WCF Server:
-  Address: net.tcp://10.2.31.9:8101/NGS.DatabaseService
+  Address: net.tcp://10.x.x.9:8101/NGS.DatabaseService
   
 WebService:
   URL: http://218.158.2.71:8807/IDISYS_2012/IDAT_WebSvr.asmx
@@ -668,8 +668,8 @@ LogHelper.WriteLog("에러", ex);
 ```xml
 <!-- app.config -->
 <appSettings>
-  <add key="WS_Address" value="net.tcp://10.2.31.9:8101/NGS.DatabaseService" />
-  <add key="DB_IP" value="10.2.30.7" />
+  <add key="WS_Address" value="net.tcp://10.x.x.9:8101/NGS.DatabaseService" />
+  <add key="DB_IP" value="10.x.x.7" />
   <add key="DB_Port" value="1522" />
 </appSettings>
 ```

@@ -31,7 +31,7 @@ flowchart TB
 
 | 항목 | 값 |
 |------|-----|
-| **호스트** | 10.2.30.7 |
+| **호스트** | 10.x.x.7 |
 | **포트** | 1522 |
 | **SID/Service** | CDBHNSMES |
 | **스키마** | MESUSER |
@@ -41,11 +41,11 @@ flowchart TB
 
 ```csharp
 // TNS 방식
-Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.2.30.7)(PORT=1522))
-  (CONNECT_DATA=(SERVICE_NAME=CDBHNSMES)));User Id=MESUSER;Password=mesuser;
+Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.x.x.7)(PORT=1522))
+  (CONNECT_DATA=(SERVICE_NAME=CDBHNSMES)));User Id=MESUSER;Password=********;
 
 // EZ Connect 방식  
-// MESUSER/mesuser@10.2.30.7:1522/CDBHNSMES
+// MESUSER/********@10.x.x.7:1522/CDBHNSMES
 ```
 
 ## 테이블 구조

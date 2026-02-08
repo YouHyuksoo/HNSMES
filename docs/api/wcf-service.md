@@ -7,13 +7,13 @@
 ## 서비스 엔드포인트
 
 ```http
-net.tcp://10.2.30.7:8101/WCF_SERVICE
+net.tcp://10.x.x.7:8101/WCF_SERVICE
 ```
 
 | 속성 | 값 |
 |------|-----|
 | **프로토콜** | NetTcp |
-| **IP 주소** | 10.2.30.7 |
+| **IP 주소** | 10.x.x.7 |
 | **포트** | 8101 |
 | **서비스명** | WCF_SERVICE |
 | **네임스페이스** | `NGS.WCFClient.DatabaseService` |
@@ -240,7 +240,7 @@ else
 sequenceDiagram
     participant Client as 클라이언트 애플리케이션
     participant WCF as WCF 클라이언트<br/>(DatabaseServiceClient)
-    participant Service as WCF 서비스<br/>(10.2.30.7:8101)
+    participant Service as WCF 서비스<br/>(10.x.x.7:8101)
     participant DB as Oracle DB
 
     Client->>WCF: 1. DatabaseServiceClient 생성
@@ -394,7 +394,7 @@ using NGS.WCFClient.DatabaseService;
 // 설정 초기화
 var settings = new ServiceSettings
 {
-    IPAddress = "10.2.30.7",
+    IPAddress = "10.x.x.7",
     Port = 8101,
     ServiceName = "WCF_SERVICE",
     Protocol = ProtocolKind.NetTcp,

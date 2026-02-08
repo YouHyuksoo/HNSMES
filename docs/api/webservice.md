@@ -7,13 +7,13 @@
 ## 서비스 엔드포인트
 
 ```http
-http://10.2.30.7:8807/WebService.asmx
+http://10.x.x.7:8807/WebService.asmx
 ```
 
 | 속성 | 값 |
 |------|-----|
 | **프로토콜** | HTTP |
-| **IP 주소** | 10.2.30.7 |
+| **IP 주소** | 10.x.x.7 |
 | **포트** | 8807 |
 | **서비스 경로** | /WebService.asmx |
 | **네임스페이스** | `IDAT.WebService` |
@@ -231,7 +231,7 @@ public async Task<string> CallWebServiceAsync()
         content.Headers.Add("SOAPAction", "http://tempuri.org/ExecuteProcCls");
         
         var response = await client.PostAsync(
-            "http://10.2.30.7:8807/WebService.asmx", 
+            "http://10.x.x.7:8807/WebService.asmx", 
             content
         );
         
@@ -243,14 +243,14 @@ public async Task<string> CallWebServiceAsync()
 ### PowerShell 호출 예제
 
 ```powershell
-$uri = "http://10.2.30.7:8807/WebService.asmx"
+$uri = "http://10.x.x.7:8807/WebService.asmx"
 
 $soapBody = @"
 <?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Body>
         <Open_WebService xmlns="http://tempuri.org/">
-            <sAddress>http://10.2.30.7:8807/WebService.asmx</sAddress>
+            <sAddress>http://10.x.x.7:8807/WebService.asmx</sAddress>
         </Open_WebService>
     </soap:Body>
 </soap:Envelope>

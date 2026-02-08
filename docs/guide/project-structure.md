@@ -227,9 +227,9 @@ HAENGSUNG_HNSMES_UI/
 <configuration>
   <appSettings>
     <!-- WCF 서비스 주소 -->
-    <add key="WCFService" value="net.tcp://10.2.31.9:8101/NGS/WCFService" />
+    <add key="WCFService" value="net.tcp://10.x.x.9:8101/NGS/WCFService" />
     <!-- 웹서비스 주소 -->
-    <add key="WebService" value="http://10.2.31.9:8807/IDISYS_2012/IDAT_WebSvr.asmx" />
+    <add key="WebService" value="http://10.x.x.9:8807/IDISYS_2012/IDAT_WebSvr.asmx" />
     <!-- 언어 설정 -->
     <add key="LANGUAGE" value="KR" />
   </appSettings>

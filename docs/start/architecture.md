@@ -368,12 +368,12 @@ public static class Global_Variable
     public static string COMPANY = "001";
     
     // DB 연결
-    public static string strOracle_IP = "10.2.30.7";
+    public static string strOracle_IP = "10.x.x.7";
     public static string strOracle_Port = "1522";
     public static string strOracle_SID = "CDBHNSMES";
-    
+
     // WCF 설정
-    public static string strWCF_Address = "net.tcp://10.2.30.7:8101/WCF_SERVICE";
+    public static string strWCF_Address = "net.tcp://10.x.x.7:8101/WCF_SERVICE";
     public static bool UseWCF = true;
     
     // 사용자 정보

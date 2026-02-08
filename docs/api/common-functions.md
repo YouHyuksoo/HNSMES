@@ -162,9 +162,9 @@ Console.WriteLine($"클라이언트 IP: {clientIP}");
 
 | 변수명 | 값 | 설명 |
 |--------|-----|------|
-| `FTP_IP` | `"ftp://10.2.30.219"` | FTP 서버 주소 |
+| `FTP_IP` | `"ftp://10.x.x.219"` | FTP 서버 주소 |
 | `FTP_ID` | `"MESUSER"` | FTP 사용자 ID |
-| `FTP_PW` | `"Admin!@#$%"` | FTP 비밀번호 |
+| `FTP_PW` | `"********"` | FTP 비밀번호 |
 
 ```csharp
 // FTP 업로드 예제

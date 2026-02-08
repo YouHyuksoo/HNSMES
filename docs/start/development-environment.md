@@ -86,7 +86,7 @@ reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full" /v Version
 
 CDBHNSMES =
   (DESCRIPTION =
-    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.2.30.7)(PORT = 1522))
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.x.x.7)(PORT = 1522))
     (CONNECT_DATA = (SERVICE_NAME = CDBHNSMES))
   )
 ```
@@ -193,8 +193,8 @@ choco install git
 3. 연결 설정:
    - 이름: HNSMES_DEV
    - 사용자 이름: MESUSER
-   - 비밀번호: mesuser
-   - 호스트: 10.2.30.7
+   - 비밀번호: ********
+   - 호스트: 10.x.x.7
    - 포트: 1522
    - SID: CDBHNSMES
 
@@ -221,17 +221,17 @@ cd hnsmes-ui
 public static class Global_Variable
 {
     // 개발 환경 설정
-    public static string strOracle_IP = "10.2.30.7";
+    public static string strOracle_IP = "10.x.x.7";
     public static string strOracle_Port = "1522";
     public static string strOracle_SID = "CDBHNSMES";
-    
+
     // 개발자별 로컬 설정 (필요시)
     #if DEBUG
     public static string strOracle_User = "MESUSER_DEV";
     public static string strWCF_Address = "net.tcp://localhost:8101/WCF_SERVICE";
     #else
     public static string strOracle_User = "MESUSER";
-    public static string strWCF_Address = "net.tcp://10.2.30.7:8101/WCF_SERVICE";
+    public static string strWCF_Address = "net.tcp://10.x.x.7:8101/WCF_SERVICE";
     #endif
 }
 ```

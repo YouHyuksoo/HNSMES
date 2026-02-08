@@ -70,8 +70,8 @@ bin/Release/
 ```xml
 <!-- app.config -->
 <appSettings>
-  <add key="WCFService" value="net.tcp://10.2.31.9:8101/NGS/WCFService" />
-  <add key="WebService" value="http://10.2.31.9:8807/IDISYS_2012/IDAT_WebSvr.asmx" />
+  <add key="WCFService" value="net.tcp://10.x.x.9:8101/NGS/WCFService" />
+  <add key="WebService" value="http://10.x.x.9:8807/IDISYS_2012/IDAT_WebSvr.asmx" />
   <add key="LANGUAGE" value="KR" />
   <add key="LOG_LEVEL" value="DEBUG" />
 </appSettings>
@@ -82,8 +82,8 @@ bin/Release/
 ```xml
 <!-- app.config -->
 <appSettings>
-  <add key="WCFService" value="net.tcp://10.2.30.9:8101/NGS/WCFService" />
-  <add key="WebService" value="http://10.2.30.9:8807/IDISYS_2012/IDAT_WebSvr.asmx" />
+  <add key="WCFService" value="net.tcp://10.x.x.9:8101/NGS/WCFService" />
+  <add key="WebService" value="http://10.x.x.9:8807/IDISYS_2012/IDAT_WebSvr.asmx" />
   <add key="LANGUAGE" value="KR" />
   <add key="LOG_LEVEL" value="INFO" />
 </appSettings>
@@ -94,8 +94,8 @@ bin/Release/
 ```xml
 <!-- app.config -->
 <appSettings>
-  <add key="WCFService" value="net.tcp://10.2.30.9:8101/NGS/WCFService" />
-  <add key="WebService" value="http://10.2.30.9:8807/IDISYS_2012/IDAT_WebSvr.asmx" />
+  <add key="WCFService" value="net.tcp://10.x.x.9:8101/NGS/WCFService" />
+  <add key="WebService" value="http://10.x.x.9:8807/IDISYS_2012/IDAT_WebSvr.asmx" />
   <add key="LANGUAGE" value="KR" />
   <add key="LOG_LEVEL" value="ERROR" />
 </appSettings>

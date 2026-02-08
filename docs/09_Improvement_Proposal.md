@@ -17,7 +17,7 @@
 ```csharp
 // 1. 비밀번호 외부화
 // BEFORE (취약)
-public static string FTP_PW = "Admin!@#$%";
+public static string FTP_PW = "********";
 
 // AFTER (권고)
 public static string FTP_PW = ConfigurationManager
