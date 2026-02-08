@@ -210,6 +210,8 @@ nav:
     - reference/glossary.md
     - reference/faq.md
     - reference/changelog.md
+  - 작업 기록:
+    - WORK_LOG.md
 
 # --------------------------------------------
 # 추가 설정
