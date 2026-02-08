@@ -180,15 +180,16 @@ nav:
   - 화면 명세:
     - screens/overview.md
     - screens/complete-specs.md
-    - screens/system-management.md
-    - screens/basic-info.md
-    - screens/master-management.md
-    - screens/planning.md
-    - screens/production.md
-    - screens/material.md
-    - screens/quality.md
-    - screens/equipment.md
-    - screens/monitoring.md
+    - 공통 (COM): screens/com.md
+    - 시스템 (SYS): screens/sys.md
+    - 기준정보 (MST): screens/mst.md
+    - 생산관리 (PRD): screens/prd.md
+    - 자재관리 (MAT): screens/mat.md
+    - 영업관리 (SAL): screens/sal.md
+    - 리포트 (RPT): screens/rpt.md
+    - 보전관리 (MNT): screens/mnt.md
+    - 모니터링 (OSC): screens/osc.md
+    - 미구현 기능: screens/planned-features.md
   
   - API 문서:
     - api/wcf-service.md

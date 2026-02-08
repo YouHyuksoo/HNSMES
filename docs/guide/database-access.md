@@ -234,7 +234,7 @@ public WSResults ExecuteDynamicProc(string procName,
     var commonParams = new Dictionary<string, object>
     {
         ["A_CLIENT"] = Global_Variable.CLIENT,
-        [A_COMPANY"] = Global_Variable.COMPANY,
+        ["A_COMPANY"] = Global_Variable.COMPANY,
         ["A_PLANT"] = Global_Variable.PLANT
     };
     

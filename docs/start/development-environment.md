@@ -167,7 +167,7 @@ choco install git
 도구 > 옵션 > NuGet 패키지 관리자 > 패키지 원본
 
 - nuget.org: https://api.nuget.org/v3/index.json
-- 나이트레스트 나이부트: (사낵 패키지 원본 추가)
+- 사내 NuGet 서버: (사내 패키지 원본 추가 시)
 ```
 
 #### 3. 디버깅 설정

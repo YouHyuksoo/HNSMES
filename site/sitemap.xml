@@ -85,7 +85,7 @@
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/basic-info/</loc>
+         <loc>https://docs.hnsmes.local/screens/com/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
@@ -93,19 +93,19 @@
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/equipment/</loc>
+         <loc>https://docs.hnsmes.local/screens/mat/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/master-management/</loc>
+         <loc>https://docs.hnsmes.local/screens/mnt/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/material/</loc>
+         <loc>https://docs.hnsmes.local/screens/mst/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/monitoring/</loc>
+         <loc>https://docs.hnsmes.local/screens/osc/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
@@ -113,19 +113,23 @@
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/planning/</loc>
+         <loc>https://docs.hnsmes.local/screens/planned-features/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/production/</loc>
+         <loc>https://docs.hnsmes.local/screens/prd/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/quality/</loc>
+         <loc>https://docs.hnsmes.local/screens/rpt/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>
-         <loc>https://docs.hnsmes.local/screens/system-management/</loc>
+         <loc>https://docs.hnsmes.local/screens/sal/</loc>
+         <lastmod>2026-02-08</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hnsmes.local/screens/sys/</loc>
          <lastmod>2026-02-08</lastmod>
     </url>
     <url>

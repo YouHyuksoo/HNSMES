@@ -111,6 +111,9 @@ public static class Global_Variable
 }
 ```
 
+!!! danger "보안 주의"
+    위 예시의 비밀번호는 설명 목적입니다. 운영 환경에서는 반드시 환경변수 또는 암호화된 설정 파일을 사용하세요.
+
 #### 연결 테스트
 
 ```csharp
