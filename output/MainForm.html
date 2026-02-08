@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MainForm - Layout</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .form-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: inline-block;
+        }
+        .form-container {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            position: relative;
+            width: 1025px;
+            height: 479px;
+            overflow: hidden;
+        }
+        .form-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13px;
+            border-bottom: 1px solid #555;
+        }
+        .control {
+            position: absolute;
+            font-size: 11px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+        }
+        .control:hover {
+            z-index: 1000;
+            box-shadow: 0 0 0 2px #0078d4, 0 4px 12px rgba(0,0,0,0.3);
+            transform: scale(1.02);
+        }
+        .control-label {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1565c0;
+            font-weight: 500;
+        }
+        .control-button {
+            background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+            border: 1px solid #707070;
+            justify-content: center;
+            font-weight: 500;
+            border-radius: 2px;
+        }
+        .control-button:hover {
+            background: linear-gradient(to bottom, #e5f1fb 0%, #cce4f7 100%);
+            border-color: #0078d4;
+        }
+        .control-textedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            border-radius: 1px;
+        }
+        .control-textedit:hover {
+            border-color: #0078d4;
+        }
+        .control-dateedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23666' d='M4 2h8v1H4zm0 3h8v1H4zm0 3h8v1H4zm0 3h8v1H4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+        }
+        .control-combobox {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+        }
+        .control-grid {
+            background: #fafafa;
+            border: 1px solid #999;
+        }
+        .control-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+            border-bottom: 1px solid #ccc;
+        }
+        .control-panel {
+            background: #fafafa;
+            border: 1px solid #ddd;
+        }
+        .control-group {
+            background: #f5f5f5;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+        }
+        .control-group::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 8px;
+            background: #f5f5f5;
+            padding: 0 4px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #666;
+            transform: translateY(-50%);
+        }
+        .control-checkbox {
+            background: transparent;
+            border: none;
+            padding-left: 16px;
+        }
+        .control-checkbox::before {
+            content: '☐';
+            position: absolute;
+            left: 2px;
+            font-size: 12px;
+        }
+        .control-radio {
+            background: transparent;
+            border: none;
+            padding-left: 16px;
+        }
+        .control-radio::before {
+            content: '○';
+            position: absolute;
+            left: 2px;
+            font-size: 10px;
+        }
+        .tooltip {
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 10000;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .control:hover .tooltip { opacity: 1; }
+        .info {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .info h3 { color: #333; margin-bottom: 10px; }
+        .info table { width: 100%; border-collapse: collapse; }
+        .info th, .info td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .info th { color: #666; font-weight: 500; }
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .stat {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .stat-value { font-size: 20px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 MainForm</h1>
+        <div class="form-wrapper">
+            <div class="form-container">
+                <div class="form-title">MainForm</div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="barEditItem2">
+                    barEditItem2
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="tabMDI">
+                    tabMDI
+                </div>
+                <div class="control control-panel" 
+                     style="left: 17px; top: 56px; width: 1008px; height: 96px;"
+                     data-text="pnlTopMenu">
+                    pnlTopMenu
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="rgbSkins">
+                    rgbSkins
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="Skins">
+                    Skins
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="rpgControl">
+                    rpgControl
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="rpgExit">
+                    rpgExit
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 489px; width: 1025px; height: 24px;"
+                     data-text="rsbar">
+                    rsbar
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 176px; height: 432px;"
+                     data-text="Menu">
+                    Menu
+                </div>
+                <div class="control control" 
+                     style="left: 3px; top: 53px; width: 169px; height: 411px;"
+                     data-text="dockPanel1_Container">
+                    dockPanel1_Container
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 169px; height: 411px;"
+                     data-text="navBarControl1">
+                    navBarControl1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 1025px; height: 21px;"
+                     data-text="rcMainTop">
+                    rcMainTop
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="Setting">
+                    Setting
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="rpgInit">
+                    rpgInit
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="rpgSearch">
+                    rpgSearch
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="rpgPrint">
+                    rpgPrint
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="statusgroupLeft">
+                    statusgroupLeft
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="lblMessage">
+                    lblMessage
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="statusgroupRight">
+                    statusgroupRight
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="lblTime">
+                    lblTime
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="timer">
+                    timer
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="btnSetScanner">
+                    btnSetScanner
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="btnSetBarPrinter">
+                    btnSetBarPrinter
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="Device">
+                    Device
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="btnSetting">
+                    btnSetting
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="System">
+                    System
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="LAF">
+                    LAF
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="lblTitle">
+                    lblTitle
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="txtTitle">
+                    txtTitle
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="rpgTitle">
+                    rpgTitle
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="popupMenu1">
+                    popupMenu1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="lblFullScreen">
+                    lblFullScreen
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="picTitle">
+                    picTitle
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="picTitle">
+                    picTitle
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="picTitleImage">
+                    picTitleImage
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="btnTouch">
+                    btnTouch
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="btnFavorites">
+                    btnFavorites
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="Menu">
+                    Menu
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 56px; width: 20px; height: 432px;"
+                     data-text="hideContainerLeft">
+                    hideContainerLeft
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="btnSubMsg">
+                    btnSubMsg
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="barButtonItem1">
+                    barButtonItem1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="barStaticItem1">
+                    barStaticItem1
+                </div>
+                <div class="control control-panel" 
+                     style="left: 17px; top: 153px; width: 1008px; height: 68px;"
+                     data-text="panelControl1">
+                    panelControl1
+                </div>
+                <div class="control control" 
+                     style="left: 1px; top: 36px; width: 1004px; height: 65px;"
+                     data-text="layoutControl1">
+                    layoutControl1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 1004px; height: 65px;"
+                     data-text="Root">
+                    Root
+                </div>
+                <div class="control control" 
+                     style="left: 1003px; top: 35px; width: 20px; height: 65px;"
+                     data-text="simpleSeparator1">
+                    simpleSeparator1
+                </div>
+                <div class="control control" 
+                     style="left: 548px; top: 35px; width: 455px; height: 65px;"
+                     data-text="tabbedControlGroup1">
+                    tabbedControlGroup1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 450px; height: 42px;"
+                     data-text="PageControl">
+                    PageControl
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem11">
+                    layoutControlItem11
+                </div>
+                <div class="control control" 
+                     style="left: 34px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem9">
+                    emptySpaceItem9
+                </div>
+                <div class="control control" 
+                     style="left: 44px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem8">
+                    emptySpaceItem8
+                </div>
+                <div class="control control" 
+                     style="left: 52px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem10">
+                    layoutControlItem10
+                </div>
+                <div class="control control" 
+                     style="left: 86px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem9">
+                    layoutControlItem9
+                </div>
+                <div class="control control" 
+                     style="left: 120px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem8">
+                    layoutControlItem8
+                </div>
+                <div class="control control" 
+                     style="left: 155px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem7">
+                    emptySpaceItem7
+                </div>
+                <div class="control control" 
+                     style="left: 164px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem6">
+                    emptySpaceItem6
+                </div>
+                <div class="control control" 
+                     style="left: 172px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem7">
+                    layoutControlItem7
+                </div>
+                <div class="control control" 
+                     style="left: 207px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem1">
+                    layoutControlItem1
+                </div>
+                <div class="control control" 
+                     style="left: 241px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem6">
+                    layoutControlItem6
+                </div>
+                <div class="control control" 
+                     style="left: 276px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem5">
+                    layoutControlItem5
+                </div>
+                <div class="control control" 
+                     style="left: 310px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem4">
+                    emptySpaceItem4
+                </div>
+                <div class="control control" 
+                     style="left: 320px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem5">
+                    emptySpaceItem5
+                </div>
+                <div class="control control" 
+                     style="left: 318px; top: 35px; width: 20px; height: 42px;"
+                     data-text="simpleSeparator3">
+                    simpleSeparator3
+                </div>
+                <div class="control control" 
+                     style="left: 328px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem4">
+                    layoutControlItem4
+                </div>
+                <div class="control control" 
+                     style="left: 362px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem2">
+                    emptySpaceItem2
+                </div>
+                <div class="control control" 
+                     style="left: 370px; top: 35px; width: 20px; height: 42px;"
+                     data-text="simpleSeparator2">
+                    simpleSeparator2
+                </div>
+                <div class="control control" 
+                     style="left: 372px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem3">
+                    emptySpaceItem3
+                </div>
+                <div class="control control" 
+                     style="left: 380px; top: 35px; width: 35px; height: 42px;"
+                     data-text="layoutControlItem3">
+                    layoutControlItem3
+                </div>
+                <div class="control control" 
+                     style="left: 415px; top: 35px; width: 35px; height: 42px;"
+                     data-text="layoutControlItem2">
+                    layoutControlItem2
+                </div>
+                <div class="control control" 
+                     style="left: 163px; top: 35px; width: 20px; height: 42px;"
+                     data-text="simpleSeparator4">
+                    simpleSeparator4
+                </div>
+                <div class="control control" 
+                     style="left: 42px; top: 35px; width: 20px; height: 42px;"
+                     data-text="simpleSeparator5">
+                    simpleSeparator5
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 450px; height: 42px;"
+                     data-text="Setting">
+                    Setting
+                </div>
+                <div class="control control" 
+                     style="left: 86px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem12">
+                    layoutControlItem12
+                </div>
+                <div class="control control" 
+                     style="left: 34px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem13">
+                    layoutControlItem13
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem14">
+                    layoutControlItem14
+                </div>
+                <div class="control control" 
+                     style="left: 138px; top: 35px; width: 34px; height: 42px;"
+                     data-text="layoutControlItem15">
+                    layoutControlItem15
+                </div>
+                <div class="control control" 
+                     style="left: 172px; top: 35px; width: 277px; height: 42px;"
+                     data-text="emptySpaceItem10">
+                    emptySpaceItem10
+                </div>
+                <div class="control control" 
+                     style="left: 128px; top: 35px; width: 20px; height: 42px;"
+                     data-text="simpleSeparator6">
+                    simpleSeparator6
+                </div>
+                <div class="control control" 
+                     style="left: 130px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem11">
+                    emptySpaceItem11
+                </div>
+                <div class="control control" 
+                     style="left: 120px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem12">
+                    emptySpaceItem12
+                </div>
+                <div class="control control" 
+                     style="left: 78px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem13">
+                    emptySpaceItem13
+                </div>
+                <div class="control control" 
+                     style="left: 76px; top: 35px; width: 20px; height: 42px;"
+                     data-text="simpleSeparator7">
+                    simpleSeparator7
+                </div>
+                <div class="control control" 
+                     style="left: 68px; top: 35px; width: 20px; height: 42px;"
+                     data-text="emptySpaceItem14">
+                    emptySpaceItem14
+                </div>
+                <div class="control control" 
+                     style="left: 360px; top: 36px; width: 186px; height: 62px;"
+                     data-text="galleryControl1">
+                    galleryControl1
+                </div>
+                <div class="control control" 
+                     style="left: 1px; top: 36px; width: 169px; height: 59px;"
+                     data-text="galleryControlClient1">
+                    galleryControlClient1
+                </div>
+                <div class="control control" 
+                     style="left: 358px; top: 35px; width: 189px; height: 65px;"
+                     data-text="layoutControlItem_SKIN">
+                    layoutControlItem_SKIN
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 91px; width: 350px; height: 15px;"
+                     data-text="emptySpaceItem15">
+                    emptySpaceItem15
+                </div>
+                <div class="control control" 
+                     style="left: 350px; top: 52px; width: 20px; height: 48px;"
+                     data-text="emptySpaceItem1">
+                    emptySpaceItem1
+                </div>
+                <div class="control control-label" 
+                     style="left: 41px; top: 54px; width: 307px; height: 34px;"
+                     data-text="labelControl_Title">
+                    labelControl_Title
+                </div>
+                <div class="control control" 
+                     style="left: 1px; top: 54px; width: 36px; height: 34px;"
+                     data-text="pictureEdit_MainIcon">
+                    pictureEdit_MainIcon
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 52px; width: 40px; height: 37px;"
+                     data-text="layoutControlItem16">
+                    layoutControlItem16
+                </div>
+                <div class="control control" 
+                     style="left: 40px; top: 52px; width: 310px; height: 37px;"
+                     data-text="layoutControlItem17">
+                    layoutControlItem17
+                </div>
+                <div class="control control-panel" 
+                     style="left: 512px; top: 303px; width: 1073px; height: 80px;"
+                     data-text="panelControl_Tile">
+                    panelControl_Tile
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 1073px; height: 80px;"
+                     data-text="tileControl1">
+                    tileControl1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 514px; width: 1025px; height: 15px;"
+                     data-text="barDockControlBottom">
+                    barDockControlBottom
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 20px; height: 479px;"
+                     data-text="barDockControlLeft">
+                    barDockControlLeft
+                </div>
+                <div class="control control" 
+                     style="left: 1025px; top: 35px; width: 20px; height: 479px;"
+                     data-text="barDockControlRight">
+                    barDockControlRight
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 514px; width: 1025px; height: 15px;"
+                     data-text="barDockControl1">
+                    barDockControl1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 1025px; height: 15px;"
+                     data-text="barDockControlTop">
+                    barDockControlTop
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="barManager1">
+                    barManager1
+                </div>
+                <div class="control control-panel" 
+                     style="left: 509px; top: 39px; width: 491px; height: 500px;"
+                     data-text="pnlDetail">
+                    pnlDetail
+                </div>
+                <div class="control control-panel" 
+                     style="left: 0px; top: 35px; width: 491px; height: 500px;"
+                     data-text="pnlDetailContainer">
+                    pnlDetailContainer
+                </div>
+                <div class="control control" 
+                     style="left: 530px; top: 54px; width: 442px; height: 256px;"
+                     data-text="pnlMain">
+                    pnlMain
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="tgMain">
+                    tgMain
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="tileGroup1">
+                    tileGroup1
+                </div>
+                <div class="control control-panel" 
+                     style="left: 512px; top: 389px; width: 1073px; height: 31px;"
+                     data-text="panelControl_TileBack">
+                    panelControl_TileBack
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="tileGroup6">
+                    tileGroup6
+                </div>
+                <div class="control control" 
+                     style="left: 4px; top: 39px; width: 80px; height: 70px;"
+                     data-text="pictureEdit_Exit">
+                    pictureEdit_Exit
+                </div>
+                <div class="control control" 
+                     style="left: 89px; top: 39px; width: 80px; height: 70px;"
+                     data-text="pictureEdit_Setting">
+                    pictureEdit_Setting
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 358px; height: 17px;"
+                     data-text="emptySpaceItem16">
+                    emptySpaceItem16
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 90px; width: 350px; height: 15px;"
+                     data-text="simpleSeparator8">
+                    simpleSeparator8
+                </div>
+                <div class="control control-panel" 
+                     style="left: 17px; top: 222px; width: 1008px; height: 267px;"
+                     data-text="panelControl_Notice">
+                    panelControl_Notice
+                </div>
+                <div class="control control" 
+                     style="left: 1px; top: 36px; width: 1004px; height: 264px;"
+                     data-text="idatNoticeInfo1">
+                    idatNoticeInfo1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="bgwNotice">
+                    bgwNotice
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="bgwUpdate">
+                    bgwUpdate
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="bgwAlert">
+                    bgwAlert
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="tmrAlert">
+                    tmrAlert
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="tmrUpdate">
+                    tmrUpdate
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="statusgroupCenter">
+                    statusgroupCenter
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="lblLogin">
+                    lblLogin
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="btnLogin">
+                    btnLogin
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="btnRegister">
+                    btnRegister
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 80px; height: 18px;"
+                     data-text="barBtnHelp">
+                    barBtnHelp
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <h3>📊 Form Information</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">123</div>
+                    <div class="stat-label">Total Controls</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">1282×599</div>
+                    <div class="stat-label">Form Size (px)</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 20px;">🎛️ Control Types</h3>
+            <table>
+                <tr><th>Type</th><th>Count</th></tr>
+                <tr><td>LayoutControlItem</td><td>18</td></tr>
+                <tr><td>EmptySpaceItem</td><td>16</td></tr>
+                <tr><td>RibbonPageGroup</td><td>10</td></tr>
+                <tr><td>BarButtonItem</td><td>9</td></tr>
+                <tr><td>SimpleSeparator</td><td>8</td></tr>
+                <tr><td>PanelControl</td><td>7</td></tr>
+                <tr><td>BarStaticItem</td><td>6</td></tr>
+                <tr><td>BarDockControl</td><td>5</td></tr>
+                <tr><td>BarEditItem</td><td>3</td></tr>
+                <tr><td>BarButtonGroup</td><td>3</td></tr>
+                <tr><td>Timer</td><td>3</td></tr>
+                <tr><td>LayoutControlGroup</td><td>3</td></tr>
+                <tr><td>PictureEdit</td><td>3</td></tr>
+                <tr><td>TileGroup</td><td>3</td></tr>
+                <tr><td>BackgroundWorker</td><td>3</td></tr>
+                <tr><td>RepositoryItemPictureEdit</td><td>2</td></tr>
+                <tr><td>TileControl</td><td>2</td></tr>
+                <tr><td>XtraTabbedMdiManager</td><td>1</td></tr>
+                <tr><td>RibbonGalleryBarItem</td><td>1</td></tr>
+                <tr><td>RibbonStatusBar</td><td>1</td></tr>
+                <tr><td>DockPanel</td><td>1</td></tr>
+                <tr><td>ControlContainer</td><td>1</td></tr>
+                <tr><td>NavBarControl</td><td>1</td></tr>
+                <tr><td>RibbonControl</td><td>1</td></tr>
+                <tr><td>RibbonPage</td><td>1</td></tr>
+                <tr><td>DefaultLookAndFeel</td><td>1</td></tr>
+                <tr><td>RepositoryItemTextEdit</td><td>1</td></tr>
+                <tr><td>PopupMenu</td><td>1</td></tr>
+                <tr><td>AutoHideContainer</td><td>1</td></tr>
+                <tr><td>LayoutControl</td><td>1</td></tr>
+                <tr><td>TabbedControlGroup</td><td>1</td></tr>
+                <tr><td>GalleryControl</td><td>1</td></tr>
+                <tr><td>GalleryControlClient</td><td>1</td></tr>
+                <tr><td>LabelControl</td><td>1</td></tr>
+                <tr><td>BarManager</td><td>1</td></tr>
+                <tr><td>IdatNoticeInfo</td><td>1</td></tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.control').forEach(el => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = el.getAttribute('title') || el.textContent;
+            document.body.appendChild(tooltip);
+            
+            el.addEventListener('mouseenter', () => {
+                const rect = el.getBoundingClientRect();
+                tooltip.style.left = rect.left + 'px';
+                tooltip.style.top = (rect.bottom + 5) + 'px';
+                tooltip.style.opacity = '1';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRDB204 - Layout</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .form-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: inline-block;
+        }
+        .form-container {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            position: relative;
+            width: 618px;
+            height: 323px;
+            overflow: hidden;
+        }
+        .form-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13px;
+            border-bottom: 1px solid #555;
+        }
+        .control {
+            position: absolute;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            /* 기본적으로 텍스트 숨김 */
+            color: transparent;
+            font-size: 0;
+            text-indent: -9999px;
+        }
+        /* 텍스트 표시하는 컨트롤 */
+        .control.has-text {
+            color: #333;
+            font-size: 10px;
+            text-indent: 0;
+            font-weight: 500;
+        }
+        .control:hover {
+            z-index: 10000 !important;
+            box-shadow: 0 0 0 3px #0078d4, 0 8px 25px rgba(0,0,0,0.4);
+            transform: scale(1.02);
+        }
+        /* 호버 시 툴팁 표시 */
+        .control::after {
+            content: attr(data-info);
+            position: absolute;
+            background: #1a1a2e;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10001;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            text-indent: 0;
+        }
+        .control:hover::after {
+            opacity: 1;
+        }
+        .control-label {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 2px;
+        }
+        .control-label.has-text {
+            color: #222;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        .control-button {
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            border: 1px solid #888;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .control-button.has-text {
+            color: #333;
+            font-weight: 600;
+            font-size: 10px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .control-button:hover {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            border-color: #005a9e;
+        }
+        .control-button.has-text:hover {
+            color: white;
+            text-shadow: none;
+        }
+        .control-textedit {
+            background: #fff;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+        }
+        .control-textedit:hover {
+            border-color: #0078d4;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08), 0 0 0 2px rgba(0,120,212,0.2);
+        }
+        .control-dateedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23666' d='M4 2h8v1H4zm0 3h8v1H4zm0 3h8v1H4zm0 3h8v1H4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+        }
+        .control-combobox {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+        }
+        .control-grid {
+            background: #fafafa;
+            border: 2px solid #666;
+            border-radius: 2px;
+        }
+        /* 그리드 헤더 */
+        .control-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+            border-bottom: 1px solid #999;
+        }
+        /* 그리드 행 표시 */
+        .control-grid::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                #eee 20px,
+                #eee 21px
+            );
+        }
+        .control-panel {
+            background: #f8f8f8;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+        }
+        .control-panel::before {
+            content: '□';
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: 8px;
+            color: #999;
+        }
+        .control-group {
+            background: #f5f5f5;
+            border: 2px solid #aaa;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .control-group.has-text {
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-top: 6px;
+            padding-left: 8px;
+        }
+        .control-group.has-text {
+            color: #555;
+            font-weight: 700;
+            font-size: 10px;
+        }
+        .control-checkbox {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 18px;
+        }
+        .control-checkbox::before {
+            content: '☐';
+            position: absolute;
+            left: 2px;
+            font-size: 14px;
+            color: #555;
+        }
+        .control-checkbox.has-text {
+            color: #333;
+            font-size: 10px;
+        }
+        .control-radio {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 18px;
+        }
+        .control-radio::before {
+            content: '○';
+            position: absolute;
+            left: 3px;
+            font-size: 12px;
+            color: #555;
+        }
+        .control-radio.has-text {
+            color: #333;
+            font-size: 10px;
+        }
+        .tooltip {
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 10000;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .control:hover .tooltip { opacity: 1; }
+        .info {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .info h3 { color: #333; margin-bottom: 10px; }
+        .info table { width: 100%; border-collapse: collapse; }
+        .info th, .info td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .info th { color: #666; font-weight: 500; }
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .stat {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .stat-value { font-size: 20px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 PRDB204</h1>
+        <div class="form-wrapper">
+            <div class="form-container">
+                <div class="form-title">PRDB204</div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 618px; height: 323px; z-index: 1;"
+                     data-info="Type: LayoutControl | Name: layoutControl1 | Size: 884x462" data-type="LayoutControl" data-name="layoutControl1">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 618px; height: 323px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup1 | Size: 884x462" data-type="LayoutControlGroup" data-name="layoutControlGroup1">
+                    layoutControl..
+                </div>
+                <div class="control control-grid " 
+                     style="left: 19px; top: 168px; width: 399px; height: 170px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList1 | Size: 571x244" data-type="GridControl" data-name="gcList1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList1 | Size: 100x23" data-type="GridView" data-name="gvList1">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 599px; height: 81px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup2 | Text: CONDITION | Size: 856x116" data-type="LayoutControlGroup" data-name="layoutControlGroup2">
+                    CONDITION
+                </div>
+                <div class="control control " 
+                     style="left: 262px; top: 101px; width: 98px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleWHLoc | Size: 140x20" data-type="IdatDxGridLookUpEdit" data-name="gleWHLoc">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView2 | Size: 100x23" data-type="GridView" data-name="gridView2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 72px; top: 101px; width: 133px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleWH | Size: 191x20" data-type="IdatDxGridLookUpEdit" data-name="gleWH">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: idatDxGridLookUpEdit1View | Size: 100x23" data-type="GridView" data-name="idatDxGridLookUpEdit1View">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 51px; width: 189px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem3 | Text: WAREHOUSE | Size: 271x24" data-type="LayoutControlItem" data-name="layoutControlItem3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 189px; top: 51px; width: 154px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem4 | Text: LOCATION | Size: 220x24" data-type="LayoutControlItem" data-name="layoutControlItem4">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 72px; top: 118px; width: 287px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtPartNo1 | Size: 411x20" data-type="IdatDxTextEdit" data-name="txtPartNo1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 68px; width: 343px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem5 | Text: PARTNO | Size: 491x24" data-type="LayoutControlItem" data-name="layoutControlItem5">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 364px; top: 84px; width: 89px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtPartNo2 | Size: 128x20" data-type="IdatDxTextEdit" data-name="txtPartNo2">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 19px; top: 132px; width: 579px; height: 206px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList2 | Size: 828x295" data-type="GridControl" data-name="gcList2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList2 | Size: 100x23" data-type="GridView" data-name="gvList2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 72px; top: 84px; width: 235px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleVendor | Size: 336x20" data-type="IdatDxGridLookUpEdit" data-name="gleVendor">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView4 | Size: 100x23" data-type="GridView" data-name="gridView4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 616px; height: 320px; z-index: 10;"
+                     data-info="Type: TabbedControlGroup | Name: tabbedControlGroup1 | Size: 880x458" data-type="TabbedControlGroup" data-name="tabbedControlGroup1">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 599px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup4 | Text: INCOMPANY | Size: 856x411" data-type="LayoutControlGroup" data-name="layoutControlGroup4">
+                    INCOMPANY
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 599px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup5 | Text: OUTSOURCING | Size: 856x411" data-type="LayoutControlGroup" data-name="layoutControlGroup5">
+                    OUTSOURCING
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 599px; height: 47px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup6 | Text: CONDITION | Size: 856x68" data-type="LayoutControlGroup" data-name="layoutControlGroup6">
+                    CONDITION
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 291px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem6 | Text: VENDOR | Size: 416x24" data-type="LayoutControlItem" data-name="layoutControlItem6">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 436px; top: 35px; width: 145px; height: 16px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem2 | Size: 208x24" data-type="EmptySpaceItem" data-name="emptySpaceItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 291px; top: 35px; width: 145px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem7 | Text: PARTNO | Size: 208x24" data-type="LayoutControlItem" data-name="layoutControlItem7">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 82px; width: 599px; height: 240px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup7 | Text: LIST | Size: 856x343" data-type="LayoutControlGroup" data-name="layoutControlGroup7">
+                    LIST
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 582px; height: 209px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem2 | Size: 832x299" data-type="LayoutControlItem" data-name="layoutControlItem2">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 19px; top: 168px; width: 579px; height: 170px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList3 | Size: 828x244" data-type="GridControl" data-name="gcList3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList3 | Size: 100x23" data-type="GridView" data-name="gvList3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 116px; width: 599px; height: 206px; z-index: 10;"
+                     data-info="Type: TabbedControlGroup | Name: tabbedControlGroup2 | Size: 856x295" data-type="TabbedControlGroup" data-name="tabbedControlGroup2">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 582px; height: 173px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup3 | Text: SUM | Size: 832x248" data-type="LayoutControlGroup" data-name="layoutControlGroup3">
+                    SUM
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 402px; height: 173px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem1 | Size: 575x248" data-type="LayoutControlItem" data-name="layoutControlItem1">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 582px; height: 173px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup8 | Text: DETAIL | Size: 832x248" data-type="LayoutControlGroup" data-name="layoutControlGroup8">
+                    DETAIL
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 582px; height: 173px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem9 | Size: 832x248" data-type="LayoutControlItem" data-name="layoutControlItem9">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: ToolTipController | Name: toolTipController1 | Size: 100x23" data-type="ToolTipController" data-name="toolTipController1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 72px; top: 84px; width: 287px; height: 15px; z-index: 10;"
+                     data-info="Type: XucFromToDate | Name: dteFromTo | Size: 411x20" data-type="XucFromToDate" data-name="dteFromTo">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 343px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem8 | Text: DATE | Size: 491x24" data-type="LayoutControlItem" data-name="layoutControlItem8">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 343px; top: 35px; width: 238px; height: 50px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem1 | Size: 341x72" data-type="EmptySpaceItem" data-name="emptySpaceItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: Timer | Name: tmrRefresh | Size: 100x23" data-type="Timer" data-name="tmrRefresh">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 422px; top: 168px; width: 177px; height: 170px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList4 | Size: 253x244" data-type="GridControl" data-name="gcList4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList4 | Size: 100x23" data-type="GridView" data-name="gvList4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 402px; top: 35px; width: 179px; height: 173px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem10 | Size: 257x248" data-type="LayoutControlItem" data-name="layoutControlItem10">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <h3>📊 Form Information</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">Total Controls</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">884×462</div>
+                    <div class="stat-label">Form Size (px)</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 20px;">🎛️ Control Types</h3>
+            <table>
+                <tr><th>Type</th><th>Count</th></tr>
+                <tr><td>LayoutControlItem</td><td>10</td></tr>
+                <tr><td>LayoutControlGroup</td><td>8</td></tr>
+                <tr><td>GridView</td><td>7</td></tr>
+                <tr><td>GridControl</td><td>4</td></tr>
+                <tr><td>IdatDxGridLookUpEdit</td><td>3</td></tr>
+                <tr><td>IdatDxTextEdit</td><td>2</td></tr>
+                <tr><td>TabbedControlGroup</td><td>2</td></tr>
+                <tr><td>EmptySpaceItem</td><td>2</td></tr>
+                <tr><td>LayoutControl</td><td>1</td></tr>
+                <tr><td>ToolTipController</td><td>1</td></tr>
+                <tr><td>XucFromToDate</td><td>1</td></tr>
+                <tr><td>Timer</td><td>1</td></tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.control').forEach(el => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = el.getAttribute('title') || el.textContent;
+            document.body.appendChild(tooltip);
+            
+            el.addEventListener('mouseenter', () => {
+                const rect = el.getBoundingClientRect();
+                tooltip.style.left = rect.left + 'px';
+                tooltip.style.top = (rect.bottom + 5) + 'px';
+                tooltip.style.opacity = '1';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>

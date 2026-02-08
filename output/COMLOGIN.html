@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMLOGIN - Layout</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .form-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: inline-block;
+        }
+        .form-container {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            position: relative;
+            width: 403px;
+            height: 251px;
+            overflow: hidden;
+        }
+        .form-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13px;
+            border-bottom: 1px solid #555;
+        }
+        .control {
+            position: absolute;
+            font-size: 11px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+        }
+        .control:hover {
+            z-index: 1000;
+            box-shadow: 0 0 0 2px #0078d4, 0 4px 12px rgba(0,0,0,0.3);
+            transform: scale(1.02);
+        }
+        .control-label {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1565c0;
+            font-weight: 500;
+        }
+        .control-button {
+            background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+            border: 1px solid #707070;
+            justify-content: center;
+            font-weight: 500;
+            border-radius: 2px;
+        }
+        .control-button:hover {
+            background: linear-gradient(to bottom, #e5f1fb 0%, #cce4f7 100%);
+            border-color: #0078d4;
+        }
+        .control-textedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            border-radius: 1px;
+        }
+        .control-textedit:hover {
+            border-color: #0078d4;
+        }
+        .control-dateedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23666' d='M4 2h8v1H4zm0 3h8v1H4zm0 3h8v1H4zm0 3h8v1H4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+        }
+        .control-combobox {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+        }
+        .control-grid {
+            background: #fafafa;
+            border: 1px solid #999;
+        }
+        .control-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+            border-bottom: 1px solid #ccc;
+        }
+        .control-panel {
+            background: #fafafa;
+            border: 1px solid #ddd;
+        }
+        .control-group {
+            background: #f5f5f5;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+        }
+        .control-group::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 8px;
+            background: #f5f5f5;
+            padding: 0 4px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #666;
+            transform: translateY(-50%);
+        }
+        .control-checkbox {
+            background: transparent;
+            border: none;
+            padding-left: 16px;
+        }
+        .control-checkbox::before {
+            content: '☐';
+            position: absolute;
+            left: 2px;
+            font-size: 12px;
+        }
+        .control-radio {
+            background: transparent;
+            border: none;
+            padding-left: 16px;
+        }
+        .control-radio::before {
+            content: '○';
+            position: absolute;
+            left: 2px;
+            font-size: 10px;
+        }
+        .tooltip {
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 10000;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .control:hover .tooltip { opacity: 1; }
+        .info {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .info h3 { color: #333; margin-bottom: 10px; }
+        .info table { width: 100%; border-collapse: collapse; }
+        .info th, .info td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .info th { color: #666; font-weight: 500; }
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .stat {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .stat-value { font-size: 20px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 COMLOGIN</h1>
+        <div class="form-wrapper">
+            <div class="form-container">
+                <div class="form-title">COMLOGIN</div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 403px; height: 251px;"
+                     data-text="layoutControl1">
+                    layoutControl1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 403px; height: 251px;"
+                     data-text="Root">
+                    Root
+                </div>
+                <div class="control control" 
+                     style="left: 120px; top: 161px; width: 249px; height: 20px;"
+                     data-text="txtPassword">
+                    txtPassword
+                </div>
+                <div class="control control" 
+                     style="left: 120px; top: 135px; width: 249px; height: 20px;"
+                     data-text="txtId">
+                    txtId
+                </div>
+                <div class="control control" 
+                     style="left: 38px; top: 133px; width: 333px; height: 24px;"
+                     data-text="USERID">
+                    USERID
+                </div>
+                <div class="control control" 
+                     style="left: 38px; top: 159px; width: 333px; height: 24px;"
+                     data-text="PASSWORD">
+                    PASSWORD
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 100px; height: 23px;"
+                     data-text="beiLanguage">
+                    beiLanguage
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 100px; height: 23px;"
+                     data-text="cboLanguage">
+                    cboLanguage
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 268px; width: 188px; height: 18px;"
+                     data-text=" ">
+                     
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 70px; width: 149px; height: 25px;"
+                     data-text="Windows NT/XP/Vista/7  ">
+                    Windows NT/XP/Vista/7  
+                </div>
+                <div class="control control" 
+                     style="left: 188px; top: 268px; width: 215px; height: 18px;"
+                     data-text=" ">
+                     
+                </div>
+                <div class="control control-checkbox" 
+                     style="left: 275px; top: 185px; width: 94px; height: 19px;"
+                     data-text="chkSaveID">
+                    chkSaveID
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 137px; width: 324px; height: 15px;"
+                     data-text="simpleSeparator1">
+                    simpleSeparator1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 133px; width: 38px; height: 114px;"
+                     data-text="emptySpaceItem11">
+                    emptySpaceItem11
+                </div>
+                <div class="control control" 
+                     style="left: 371px; top: 133px; width: 32px; height: 114px;"
+                     data-text="emptySpaceItem12">
+                    emptySpaceItem12
+                </div>
+                <div class="control control" 
+                     style="left: 38px; top: 183px; width: 235px; height: 24px;"
+                     data-text="emptySpaceItem1">
+                    emptySpaceItem1
+                </div>
+                <div class="control control" 
+                     style="left: 273px; top: 183px; width: 98px; height: 24px;"
+                     data-text="layoutControlItem1">
+                    layoutControlItem1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 247px; width: 403px; height: 19px;"
+                     data-text="emptySpaceItem7">
+                    emptySpaceItem7
+                </div>
+                <div class="control control" 
+                     style="left: 293px; top: 219px; width: 76px; height: 26px;"
+                     data-text="CANCEL">
+                    CANCEL
+                </div>
+                <div class="control control" 
+                     style="left: 213px; top: 219px; width: 76px; height: 26px;"
+                     data-text="LOGIN">
+                    LOGIN
+                </div>
+                <div class="control control" 
+                     style="left: 211px; top: 217px; width: 80px; height: 30px;"
+                     data-text="layoutControlItem4">
+                    layoutControlItem4
+                </div>
+                <div class="control control" 
+                     style="left: 291px; top: 217px; width: 80px; height: 30px;"
+                     data-text="layoutControlItem5">
+                    layoutControlItem5
+                </div>
+                <div class="control control" 
+                     style="left: 255px; top: 72px; width: 146px; height: 20px;"
+                     data-text="comLanguage">
+                    comLanguage
+                </div>
+                <div class="control control" 
+                     style="left: 253px; top: 70px; width: 150px; height: 24px;"
+                     data-text="layoutControlItem2">
+                    layoutControlItem2
+                </div>
+                <div class="control control" 
+                     style="left: 255px; top: 96px; width: 146px; height: 20px;"
+                     data-text="grdLookPlant">
+                    grdLookPlant
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 100px; height: 23px;"
+                     data-text="idatDxGridLookUpEdit1View">
+                    idatDxGridLookUpEdit1View
+                </div>
+                <div class="control control" 
+                     style="left: 253px; top: 94px; width: 150px; height: 24px;"
+                     data-text="PLANT">
+                    PLANT
+                </div>
+                <div class="control control" 
+                     style="left: 149px; top: 70px; width: 104px; height: 48px;"
+                     data-text="emptySpaceItem2">
+                    emptySpaceItem2
+                </div>
+                <div class="control control" 
+                     style="left: 38px; top: 157px; width: 333px; height: 15px;"
+                     data-text="emptySpaceItem5">
+                    emptySpaceItem5
+                </div>
+                <div class="control control" 
+                     style="left: 38px; top: 217px; width: 173px; height: 30px;"
+                     data-text="emptySpaceItem8">
+                    emptySpaceItem8
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 120px; width: 403px; height: 15px;"
+                     data-text="emptySpaceItem9">
+                    emptySpaceItem9
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 266px; width: 403px; height: 15px;"
+                     data-text="simpleSeparator1">
+                    simpleSeparator1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 403px; height: 35px;"
+                     data-text="idatDxPictureEdit1">
+                    idatDxPictureEdit1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 403px; height: 35px;"
+                     data-text="layoutControlItem6">
+                    layoutControlItem6
+                </div>
+                <div class="control control" 
+                     style="left: 38px; top: 207px; width: 333px; height: 15px;"
+                     data-text="emptySpaceItem3">
+                    emptySpaceItem3
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 95px; width: 149px; height: 23px;"
+                     data-text="emptySpaceItem4">
+                    emptySpaceItem4
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 118px; width: 403px; height: 15px;"
+                     data-text="simpleSeparator3">
+                    simpleSeparator3
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <h3>📊 Form Information</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">37</div>
+                    <div class="stat-label">Total Controls</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">403×251</div>
+                    <div class="stat-label">Form Size (px)</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 20px;">🎛️ Control Types</h3>
+            <table>
+                <tr><th>Type</th><th>Count</th></tr>
+                <tr><td>EmptySpaceItem</td><td>10</td></tr>
+                <tr><td>LayoutControlItem</td><td>8</td></tr>
+                <tr><td>SimpleLabelItem</td><td>3</td></tr>
+                <tr><td>SimpleSeparator</td><td>3</td></tr>
+                <tr><td>ButtonEdit</td><td>2</td></tr>
+                <tr><td>IdatDxSimpleButton</td><td>2</td></tr>
+                <tr><td>LayoutControl</td><td>1</td></tr>
+                <tr><td>LayoutControlGroup</td><td>1</td></tr>
+                <tr><td>BarEditItem</td><td>1</td></tr>
+                <tr><td>RepositoryItemComboBox</td><td>1</td></tr>
+                <tr><td>CheckEdit</td><td>1</td></tr>
+                <tr><td>IdatDxComboBoxEdit</td><td>1</td></tr>
+                <tr><td>IdatDxGridLookUpEdit</td><td>1</td></tr>
+                <tr><td>GridView</td><td>1</td></tr>
+                <tr><td>IdatDxPictureEdit</td><td>1</td></tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.control').forEach(el => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = el.getAttribute('title') || el.textContent;
+            document.body.appendChild(tooltip);
+            
+            el.addEventListener('mouseenter', () => {
+                const rect = el.getBoundingClientRect();
+                tooltip.style.left = rect.left + 'px';
+                tooltip.style.top = (rect.bottom + 5) + 'px';
+                tooltip.style.opacity = '1';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>

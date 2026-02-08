@@ -1,0 +1,237 @@
+# ============================================
+# HAENGSUNG HNSMES UI - Developer Documentation
+# MkDocs Configuration with Material Theme
+# ============================================
+
+site_name: HNSMES UI 개발자 문서
+site_description: HAENGSUNG HNSMES 시스템 개발자 가이드 및 기술 문서
+site_author: 개발팀
+site_url: https://docs.hnsmes.local
+
+copyright: Copyright &copy; 2025 HAENGSUNG. All rights reserved.
+
+# --------------------------------------------
+# 테마 설정 (Material Theme)
+# --------------------------------------------
+theme:
+  name: material
+  language: ko
+  
+  # 디자인 설정
+  palette:
+    # 라이트 모드 (기본)
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 다크 모드로 전환
+    # 다크 모드
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 라이트 모드로 전환
+  
+  # 폰트 설정
+  font:
+    text: Roboto
+    code: Roboto Mono
+  
+  # 로고 및 파비콘
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
+  
+  # 기능 설정
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.action.edit
+    - content.action.view
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+
+# --------------------------------------------
+# 확장 플러그인
+# --------------------------------------------
+plugins:
+  - search:
+      lang: ko
+  - minify:
+      minify_html: true
+      minify_js: true
+
+exclude_docs: |
+  00_Developer_Guide_Complete.md
+  01_Project_Structure_Analysis.md
+  02_Database_Analysis.md
+  03_System_Workflow.md
+  04_Table_Specification.md
+  05_Procedure_Specification.md
+  06_Screen_Specification_Complete.md
+  07_ERD_Diagram.md
+  08_API_Interface.md
+  09_Improvement_Proposal.md
+
+# --------------------------------------------
+# Markdown 확장
+# --------------------------------------------
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      title: 목차
+      toc_depth: 6
+  
+  # PyMdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: haengsung
+      repo: hnsmes-ui
+  - pymdownx.mark
+  - pymdownx.progressbar
+  - pymdownx.snippets
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# --------------------------------------------
+# 추가 CSS/JS
+# --------------------------------------------
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/extra.js
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# --------------------------------------------
+# 사이드바 네비게이션 구조
+# --------------------------------------------
+nav:
+  - 홈:
+    - index.md
+  
+  - 시작하기:
+    - start/introduction.md
+    - start/quickstart.md
+    - start/architecture.md
+    - start/development-environment.md
+  
+  - 개발 가이드:
+    - guide/project-structure.md
+    - guide/coding-standards.md
+    - guide/database-access.md
+    - guide/ui-components.md
+  
+  - 데이터베이스:
+    - database/overview.md
+    - database/procedures-complete.md
+    - database/erd-complete.md
+  
+  - 화면 명세:
+    - screens/overview.md
+    - screens/complete-specs.md
+    - screens/system-management.md
+    - screens/basic-info.md
+    - screens/master-management.md
+    - screens/planning.md
+    - screens/production.md
+    - screens/material.md
+    - screens/quality.md
+    - screens/equipment.md
+    - screens/monitoring.md
+  
+  - API 문서:
+    - api/wcf-service.md
+    - api/webservice.md
+    - api/common-functions.md
+  
+  - 운영 가이드:
+    - operations/deployment.md
+    - operations/troubleshooting.md
+    - operations/backup-recovery.md
+  
+  - 개선 제안:
+    - improvements/security.md
+    - improvements/refactoring.md
+    - improvements/roadmap.md
+  
+  - 참고 자료:
+    - reference/glossary.md
+    - reference/faq.md
+    - reference/changelog.md
+
+# --------------------------------------------
+# 추가 설정
+# --------------------------------------------
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/haengsung
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/r/haengsung
+    - icon: fontawesome/solid/envelope
+      link: mailto:dev@haengsung.co.kr
+  
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+  
+  consent:
+    title: Cookie 동의
+    description: >-
+      이 웹사이트는 문서 기능 향상을 위해 쿠키를 사용합니다.
+    actions:
+      - accept
+      - reject
+      - manage

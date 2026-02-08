@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATA203 - Layout</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .form-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: inline-block;
+        }
+        .form-container {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            position: relative;
+            width: 618px;
+            height: 323px;
+            overflow: hidden;
+        }
+        .form-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13px;
+            border-bottom: 1px solid #555;
+        }
+        .control {
+            position: absolute;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            /* 기본적으로 텍스트 숨김 */
+            color: transparent;
+            font-size: 0;
+            text-indent: -9999px;
+        }
+        /* 텍스트 표시하는 컨트롤 */
+        .control.has-text {
+            color: #333;
+            font-size: 10px;
+            text-indent: 0;
+            font-weight: 500;
+        }
+        .control:hover {
+            z-index: 10000 !important;
+            box-shadow: 0 0 0 3px #0078d4, 0 8px 25px rgba(0,0,0,0.4);
+            transform: scale(1.02);
+        }
+        /* 호버 시 툴팁 표시 */
+        .control::after {
+            content: attr(data-info);
+            position: absolute;
+            background: #1a1a2e;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10001;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            text-indent: 0;
+        }
+        .control:hover::after {
+            opacity: 1;
+        }
+        .control-label {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 2px;
+        }
+        .control-label.has-text {
+            color: #222;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        .control-button {
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            border: 1px solid #888;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .control-button.has-text {
+            color: #333;
+            font-weight: 600;
+            font-size: 10px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .control-button:hover {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            border-color: #005a9e;
+        }
+        .control-button.has-text:hover {
+            color: white;
+            text-shadow: none;
+        }
+        .control-textedit {
+            background: #fff;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+        }
+        .control-textedit:hover {
+            border-color: #0078d4;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08), 0 0 0 2px rgba(0,120,212,0.2);
+        }
+        .control-dateedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23666' d='M4 2h8v1H4zm0 3h8v1H4zm0 3h8v1H4zm0 3h8v1H4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+        }
+        .control-combobox {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+        }
+        .control-grid {
+            background: #fafafa;
+            border: 2px solid #666;
+            border-radius: 2px;
+        }
+        /* 그리드 헤더 */
+        .control-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+            border-bottom: 1px solid #999;
+        }
+        /* 그리드 행 표시 */
+        .control-grid::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                #eee 20px,
+                #eee 21px
+            );
+        }
+        .control-panel {
+            background: #f8f8f8;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+        }
+        .control-panel::before {
+            content: '□';
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: 8px;
+            color: #999;
+        }
+        .control-group {
+            background: #f5f5f5;
+            border: 2px solid #aaa;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .control-group.has-text {
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-top: 6px;
+            padding-left: 8px;
+        }
+        .control-group.has-text {
+            color: #555;
+            font-weight: 700;
+            font-size: 10px;
+        }
+        .control-checkbox {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 18px;
+        }
+        .control-checkbox::before {
+            content: '☐';
+            position: absolute;
+            left: 2px;
+            font-size: 14px;
+            color: #555;
+        }
+        .control-checkbox.has-text {
+            color: #333;
+            font-size: 10px;
+        }
+        .control-radio {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 18px;
+        }
+        .control-radio::before {
+            content: '○';
+            position: absolute;
+            left: 3px;
+            font-size: 12px;
+            color: #555;
+        }
+        .control-radio.has-text {
+            color: #333;
+            font-size: 10px;
+        }
+        .tooltip {
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 10000;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .control:hover .tooltip { opacity: 1; }
+        .info {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .info h3 { color: #333; margin-bottom: 10px; }
+        .info table { width: 100%; border-collapse: collapse; }
+        .info th, .info td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .info th { color: #666; font-weight: 500; }
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .stat {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .stat-value { font-size: 20px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 MATA203</h1>
+        <div class="form-wrapper">
+            <div class="form-container">
+                <div class="form-title">MATA203</div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 618px; height: 323px; z-index: 1;"
+                     data-info="Type: LayoutControl | Name: layoutControl1 | Size: 884x462" data-type="LayoutControl" data-name="layoutControl1">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 618px; height: 323px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup1 | Text: Root | Size: 884x462" data-type="LayoutControlGroup" data-name="layoutControlGroup1">
+                    Root
+                </div>
+                <div class="control control " 
+                     style="left: 79px; top: 323px; width: 528px; height: 23px; z-index: 10;"
+                     data-info="Type: IdatDxMemoEdit | Name: memRemarks | Size: 755x34" data-type="IdatDxMemoEdit" data-name="memRemarks">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 11px; top: 107px; width: 596px; height: 213px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList | Size: 852x305" data-type="GridControl" data-name="gcList">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList | Size: 100x23" data-type="GridView" data-name="gvList">
+                    
+                </div>
+                <div class="control control-button has-text" 
+                     style="left: 484px; top: 79px; width: 123px; height: 25px; z-index: 10;"
+                     data-info="Type: IdatDxSimpleButton | Name: btnDelete | Text: Delete | Size: 176x36" data-type="IdatDxSimpleButton" data-name="btnDelete">
+                    Delete
+                </div>
+                <div class="control control " 
+                     style="left: 79px; top: 62px; width: 135px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleWHLoc | Size: 193x20" data-type="IdatDxGridLookUpEdit" data-name="gleWHLoc">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: idatDxGridLookUpEdit1View | Size: 100x23" data-type="GridView" data-name="idatDxGridLookUpEdit1View">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 79px; top: 79px; width: 135px; height: 23px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtBarcode | Size: 193x34" data-type="IdatDxTextEdit" data-name="txtBarcode">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 616px; height: 320px; z-index: 10;"
+                     data-info="Type: TabbedControlGroup | Name: tabbedControlGroup1 | Size: 880x458" data-type="TabbedControlGroup" data-name="tabbedControlGroup1">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 599px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup3 | Text: BARCODEIN | Size: 856x411" data-type="LayoutControlGroup" data-name="layoutControlGroup3">
+                    BARCODEIN
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 296px; width: 599px; height: 26px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem3 | Text: REMARKS | Size: 856x38" data-type="LayoutControlItem" data-name="layoutControlItem3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 79px; width: 599px; height: 216px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem1 | Size: 856x309" data-type="LayoutControlItem" data-name="layoutControlItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 473px; top: 51px; width: 125px; height: 28px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem2 | Size: 180x40" data-type="LayoutControlItem" data-name="layoutControlItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 205px; top: 51px; width: 267px; height: 28px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem1 | Size: 382x40" data-type="EmptySpaceItem" data-name="emptySpaceItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 205px; top: 35px; width: 393px; height: 16px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem2 | Size: 562x24" data-type="EmptySpaceItem" data-name="emptySpaceItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 51px; width: 205px; height: 28px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem7 | Text: BARCODE | Size: 294x40" data-type="LayoutControlItem" data-name="layoutControlItem7">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 205px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem5 | Text: WHLOC | Size: 294x24" data-type="LayoutControlItem" data-name="layoutControlItem5">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 599px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup2 | Text: IQCQTYIN | Size: 856x411" data-type="LayoutControlGroup" data-name="layoutControlGroup2">
+                    IQCQTYIN
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 599px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup4 | Text: QTYIN | Size: 856x411" data-type="LayoutControlGroup" data-name="layoutControlGroup4">
+                    QTYIN
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 315px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup5 | Text: CONDITION | Size: 451x411" data-type="LayoutControlGroup" data-name="layoutControlGroup5">
+                    CONDITION
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 68px; width: 298px; height: 223px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup7 | Text: LIST | Size: 427x319" data-type="LayoutControlGroup" data-name="layoutControlGroup7">
+                    LIST
+                </div>
+                <div class="control control has-text" 
+                     style="left: 319px; top: 35px; width: 280px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup6 | Text: INPUTINFO | Size: 400x411" data-type="LayoutControlGroup" data-name="layoutControlGroup6">
+                    INPUTINFO
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 85px; width: 263px; height: 206px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup8 | Text: LIST | Size: 376x295" data-type="LayoutControlGroup" data-name="layoutControlGroup8">
+                    LIST
+                </div>
+                <div class="control control " 
+                     style="left: 87px; top: 84px; width: 162px; height: 15px; z-index: 10;"
+                     data-info="Type: XucFromToDate | Name: dteFromTo | Size: 232x20" data-type="XucFromToDate" data-name="dteFromTo">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 233px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem4 | Text: IQCDATE | Size: 333x24" data-type="LayoutControlItem" data-name="layoutControlItem4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 87px; top: 101px; width: 162px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleCPartNo | Size: 232x20" data-type="IdatDxGridLookUpEdit" data-name="gleCPartNo">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView1 | Size: 100x23" data-type="GridView" data-name="gridView1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 51px; width: 233px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem6 | Text: PARTNO | Size: 333x24" data-type="LayoutControlItem" data-name="layoutControlItem6">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 315px; top: 35px; width: 20px; height: 287px; z-index: 10;"
+                     data-info="Type: SplitterItem | Name: splitterItem1 | Size: 5x411" data-type="SplitterItem" data-name="splitterItem1">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 406px; top: 118px; width: 74px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtIqcQty | Size: 106x20" data-type="IdatDxTextEdit" data-name="txtIqcQty">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 551px; top: 101px; width: 47px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtIqcCrt | Size: 68x20" data-type="IdatDxTextEdit" data-name="txtIqcCrt">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 406px; top: 101px; width: 74px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtIqcInDate | Size: 106x20" data-type="IdatDxTextEdit" data-name="txtIqcInDate">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 406px; top: 84px; width: 74px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtVendor | Size: 106x20" data-type="IdatDxTextEdit" data-name="txtVendor">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 551px; top: 84px; width: 47px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtPartNo | Size: 68x20" data-type="IdatDxTextEdit" data-name="txtPartNo">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 144px; top: 35px; width: 118px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem8 | Text: PARTNO | Size: 169x24" data-type="LayoutControlItem" data-name="layoutControlItem8">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 144px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem9 | Text: VENDOR | Size: 207x24" data-type="LayoutControlItem" data-name="layoutControlItem9">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 51px; width: 144px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem10 | Text: IQCDATE | Size: 207x24" data-type="LayoutControlItem" data-name="layoutControlItem10">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 144px; top: 51px; width: 118px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem11 | Text: CREATETIMEKEY | Size: 169x24" data-type="LayoutControlItem" data-name="layoutControlItem11">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 68px; width: 144px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem12 | Text: IQCQTY | Size: 207x24" data-type="LayoutControlItem" data-name="layoutControlItem12">
+                    
+                </div>
+                <div class="control control-button has-text" 
+                     style="left: 252px; top: 84px; width: 62px; height: 26px; z-index: 10;"
+                     data-info="Type: IdatDxSimpleButton | Name: btnLSearch | Text: SEARCH | Size: 90x38" data-type="IdatDxSimpleButton" data-name="btnLSearch">
+                    SEARCH
+                </div>
+                <div class="control control " 
+                     style="left: 233px; top: 35px; width: 65px; height: 33px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem13 | Size: 94x48" data-type="LayoutControlItem" data-name="layoutControlItem13">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 347px; top: 157px; width: 243px; height: 172px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList2 | Size: 348x247" data-type="GridControl" data-name="gcList2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList2 | Size: 100x23" data-type="GridView" data-name="gvList2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 3;"
+                     data-info="Type: RepositoryItemCheckEdit | Name: repositoryItemCheckEdit2 | Size: 100x23" data-type="RepositoryItemCheckEdit" data-name="repositoryItemCheckEdit2">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 28px; top: 140px; width: 279px; height: 189px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList1 | Size: 399x271" data-type="GridControl" data-name="gcList1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList1 | Size: 100x23" data-type="GridView" data-name="gvList1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 3;"
+                     data-info="Type: RepositoryItemCheckEdit | Name: repositoryItemCheckEdit1 | Size: 100x23" data-type="RepositoryItemCheckEdit" data-name="repositoryItemCheckEdit1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 282px; height: 192px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem14 | Size: 403x275" data-type="LayoutControlItem" data-name="layoutControlItem14">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 246px; height: 175px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem15 | Size: 352x251" data-type="LayoutControlItem" data-name="layoutControlItem15">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 551px; top: 118px; width: 47px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleIqcWHLoc | Size: 68x20" data-type="IdatDxGridLookUpEdit" data-name="gleIqcWHLoc">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView2 | Size: 100x23" data-type="GridView" data-name="gridView2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 144px; top: 68px; width: 118px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem16 | Text: WHLOC | Size: 169x24" data-type="LayoutControlItem" data-name="layoutControlItem16">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 291px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup9 | Text: CONDITION | Size: 417x411" data-type="LayoutControlGroup" data-name="layoutControlGroup9">
+                    CONDITION
+                </div>
+                <div class="control control " 
+                     style="left: 87px; top: 84px; width: 138px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleQtyVendor | Size: 198x20" data-type="IdatDxGridLookUpEdit" data-name="gleQtyVendor">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView9 | Size: 100x23" data-type="GridView" data-name="gridView9">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 209px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem17 | Text: VENDOR | Size: 299x24" data-type="LayoutControlItem" data-name="layoutControlItem17">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 87px; top: 101px; width: 138px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleQtyPartNo | Size: 198x20" data-type="IdatDxGridLookUpEdit" data-name="gleQtyPartNo">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView10 | Size: 100x23" data-type="GridView" data-name="gridView10">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 51px; width: 209px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem18 | Text: PARTNO | Size: 299x24" data-type="LayoutControlItem" data-name="layoutControlItem18">
+                    
+                </div>
+                <div class="control control-textedit " 
+                     style="left: 87px; top: 118px; width: 138px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxTextEdit | Name: txtQtyInvoice | Size: 198x20" data-type="IdatDxTextEdit" data-name="txtQtyInvoice">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 68px; width: 209px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem19 | Text: INVOICE | Size: 299x24" data-type="LayoutControlItem" data-name="layoutControlItem19">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 295px; top: 35px; width: 303px; height: 287px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup10 | Size: 434x411" data-type="LayoutControlGroup" data-name="layoutControlGroup10">
+                    layoutControl..
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 85px; width: 275px; height: 206px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup11 | Text: LIST | Size: 393x295" data-type="LayoutControlGroup" data-name="layoutControlGroup11">
+                    LIST
+                </div>
+                <div class="control control-grid " 
+                     style="left: 28px; top: 157px; width: 255px; height: 172px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList3 | Size: 365x247" data-type="GridControl" data-name="gcList3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList3 | Size: 100x23" data-type="GridView" data-name="gvList3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 3;"
+                     data-info="Type: RepositoryItemCheckEdit | Name: repositoryItemCheckEdit3 | Size: 100x23" data-type="RepositoryItemCheckEdit" data-name="repositoryItemCheckEdit3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 258px; height: 175px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem20 | Size: 369x251" data-type="LayoutControlItem" data-name="layoutControlItem20">
+                    
+                </div>
+                <div class="control control-button has-text" 
+                     style="left: 315px; top: 84px; width: 144px; height: 28px; z-index: 10;"
+                     data-info="Type: IdatDxSimpleButton | Name: btnNewRecv1 | Text: LOCAL/DOMESTIC | Size: 206x40" data-type="IdatDxSimpleButton" data-name="btnNewRecv1">
+                    LOCAL/D..
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 147px; height: 30px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem21 | Size: 210x44" data-type="LayoutControlItem" data-name="layoutControlItem21">
+                    
+                </div>
+                <div class="control control-button has-text" 
+                     style="left: 461px; top: 84px; width: 137px; height: 28px; z-index: 10;"
+                     data-info="Type: IdatDxSimpleButton | Name: btnNewRecv2 | Text: BORROW | Size: 196x40" data-type="IdatDxSimpleButton" data-name="btnNewRecv2">
+                    BORROW
+                </div>
+                <div class="control control " 
+                     style="left: 147px; top: 35px; width: 140px; height: 30px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem22 | Size: 200x44" data-type="LayoutControlItem" data-name="layoutControlItem22">
+                    
+                </div>
+                <div class="control control-button has-text" 
+                     style="left: 315px; top: 115px; width: 144px; height: 28px; z-index: 10;"
+                     data-info="Type: IdatDxSimpleButton | Name: btnNewRecv3 | Text: RETURNRENTAL | Size: 206x40" data-type="IdatDxSimpleButton" data-name="btnNewRecv3">
+                    RETURNR..
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 65px; width: 147px; height: 30px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem23 | Size: 210x44" data-type="LayoutControlItem" data-name="layoutControlItem23">
+                    
+                </div>
+                <div class="control control-button has-text" 
+                     style="left: 461px; top: 115px; width: 137px; height: 28px; z-index: 10;"
+                     data-info="Type: IdatDxSimpleButton | Name: btnNewRecv4 | Text: RETURNOUTSOURCING | Size: 196x40" data-type="IdatDxSimpleButton" data-name="btnNewRecv4">
+                    RETURNO..
+                </div>
+                <div class="control control " 
+                     style="left: 147px; top: 65px; width: 140px; height: 30px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem24 | Size: 200x44" data-type="LayoutControlItem" data-name="layoutControlItem24">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 382px; top: 146px; width: 67px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleQtyNVendor | Size: 96x20" data-type="IdatDxGridLookUpEdit" data-name="gleQtyNVendor">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView13 | Size: 100x23" data-type="GridView" data-name="gridView13">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 96px; width: 137px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem25 | Text: VENDOR | Size: 197x24" data-type="LayoutControlItem" data-name="layoutControlItem25">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 520px; top: 146px; width: 78px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleQtyNPartNo | Size: 112x20" data-type="IdatDxGridLookUpEdit" data-name="gleQtyNPartNo">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView16 | Size: 100x23" data-type="GridView" data-name="gridView16">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 137px; top: 96px; width: 149px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem26 | Text: PARTNO | Size: 213x24" data-type="LayoutControlItem" data-name="layoutControlItem26">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 382px; top: 163px; width: 67px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxSpinEdit | Name: speQtyNQty | Size: 96x20" data-type="IdatDxSpinEdit" data-name="speQtyNQty">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 113px; width: 137px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem27 | Text: QTY | Size: 197x24" data-type="LayoutControlItem" data-name="layoutControlItem27">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 130px; width: 287px; height: 161px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup12 | Text: NEW | Size: 410x231" data-type="LayoutControlGroup" data-name="layoutControlGroup12">
+                    NEW
+                </div>
+                <div class="control control " 
+                     style="left: 291px; top: 35px; width: 20px; height: 287px; z-index: 10;"
+                     data-info="Type: SplitterItem | Name: splitterItem2 | Size: 5x411" data-type="SplitterItem" data-name="splitterItem2">
+                    
+                </div>
+                <div class="control control-button has-text" 
+                     style="left: 228px; top: 84px; width: 62px; height: 47px; z-index: 10;"
+                     data-info="Type: IdatDxSimpleButton | Name: btnQtySearch | Text: SEARCH | Size: 90x68" data-type="IdatDxSimpleButton" data-name="btnQtySearch">
+                    SEARCH
+                </div>
+                <div class="control control " 
+                     style="left: 209px; top: 35px; width: 65px; height: 50px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem30 | Size: 94x72" data-type="LayoutControlItem" data-name="layoutControlItem30">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 520px; top: 163px; width: 78px; height: 15px; z-index: 10;"
+                     data-info="Type: IdatDxGridLookUpEdit | Name: gleQtyNWHLoc | Size: 112x20" data-type="IdatDxGridLookUpEdit" data-name="gleQtyNWHLoc">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gridView3 | Size: 100x23" data-type="GridView" data-name="gridView3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 137px; top: 113px; width: 149px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem28 | Text: WHLOC | Size: 213x24" data-type="LayoutControlItem" data-name="layoutControlItem28">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 130px; width: 287px; height: 161px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup15 | Text: NEW | Size: 410x231" data-type="LayoutControlGroup" data-name="layoutControlGroup15">
+                    NEW
+                </div>
+                <div class="control control-grid " 
+                     style="left: 323px; top: 202px; width: 267px; height: 128px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList4 | Size: 382x183" data-type="GridControl" data-name="gcList4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList4 | Size: 100x23" data-type="GridView" data-name="gvList4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 270px; height: 130px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem29 | Size: 386x187" data-type="LayoutControlItem" data-name="layoutControlItem29">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <h3>📊 Form Information</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">95</div>
+                    <div class="stat-label">Total Controls</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">884×462</div>
+                    <div class="stat-label">Form Size (px)</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 20px;">🎛️ Control Types</h3>
+            <table>
+                <tr><th>Type</th><th>Count</th></tr>
+                <tr><td>LayoutControlItem</td><td>30</td></tr>
+                <tr><td>LayoutControlGroup</td><td>13</td></tr>
+                <tr><td>GridView</td><td>13</td></tr>
+                <tr><td>IdatDxGridLookUpEdit</td><td>8</td></tr>
+                <tr><td>IdatDxSimpleButton</td><td>7</td></tr>
+                <tr><td>IdatDxTextEdit</td><td>7</td></tr>
+                <tr><td>GridControl</td><td>5</td></tr>
+                <tr><td>RepositoryItemCheckEdit</td><td>3</td></tr>
+                <tr><td>EmptySpaceItem</td><td>2</td></tr>
+                <tr><td>SplitterItem</td><td>2</td></tr>
+                <tr><td>LayoutControl</td><td>1</td></tr>
+                <tr><td>IdatDxMemoEdit</td><td>1</td></tr>
+                <tr><td>TabbedControlGroup</td><td>1</td></tr>
+                <tr><td>XucFromToDate</td><td>1</td></tr>
+                <tr><td>IdatDxSpinEdit</td><td>1</td></tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.control').forEach(el => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = el.getAttribute('title') || el.textContent;
+            document.body.appendChild(tooltip);
+            
+            el.addEventListener('mouseenter', () => {
+                const rect = el.getBoundingClientRect();
+                tooltip.style.left = rect.left + 'px';
+                tooltip.style.top = (rect.bottom + 5) + 'px';
+                tooltip.style.opacity = '1';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>

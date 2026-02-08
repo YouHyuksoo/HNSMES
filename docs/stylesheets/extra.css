@@ -1,0 +1,357 @@
+/* ============================================
+   HNSMES UI Documentation - Custom Styles
+   ============================================ */
+
+/* Custom Color Variables */
+:root {
+  --md-primary-fg-color: #3f51b5;
+  --md-primary-fg-color--light: #7986cb;
+  --md-primary-fg-color--dark: #303f9f;
+  --md-accent-fg-color: #ff4081;
+  --md-accent-fg-color--transparent: #ff40811a;
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #5c6bc0;
+  --md-primary-fg-color--light: #8e99a4;
+  --md-primary-fg-color--dark: #3949ab;
+}
+
+/* Custom Admonition Colors */
+.md-typeset .admonition.hnsmes,
+.md-typeset details.hnsmes {
+  border-color: #3f51b5;
+}
+
+.md-typeset .hnsmes > .admonition-title,
+.md-typeset .hnsmes > summary {
+  background-color: #3f51b51a;
+}
+
+.md-typeset .hnsmes > .admonition-title::before,
+.md-typeset .hnsmes > summary::before {
+  background-color: #3f51b5;
+  -webkit-mask-image: var(--md-admonition-icon--hnsmes);
+  mask-image: var(--md-admonition-icon--hnsmes);
+}
+
+/* Code block enhancements */
+.md-typeset code {
+  border-radius: 0.2rem;
+  padding: 0.1em 0.3em;
+}
+
+.md-typeset pre > code {
+  border-radius: 0.4rem;
+}
+
+/* Table improvements */
+.md-typeset table:not([class]) {
+  font-size: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-primary-fg-color);
+  color: white;
+  font-weight: 600;
+  padding: 0.8em 1em;
+}
+
+.md-typeset table:not([class]) td {
+  padding: 0.6em 1em;
+}
+
+.md-typeset table:not([class]) tr:nth-child(even) {
+  background-color: var(--md-accent-fg-color--transparent);
+}
+
+/* Custom cards */
+.md-typeset .grid.cards > ul > li {
+  border-radius: 0.4rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Header styling */
+.md-header {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.md-header__title {
+  font-weight: 600;
+}
+
+/* Navigation improvements */
+.md-nav__item .md-nav__link--active {
+  font-weight: 600;
+  color: var(--md-primary-fg-color);
+}
+
+/* Tab styling */
+.md-typeset .tabbed-labels > label {
+  font-weight: 500;
+  border-radius: 0.2rem 0.2rem 0 0;
+}
+
+/* Progress bar styling */
+.md-typeset .progress-bar {
+  height: 8px;
+  background: linear-gradient(90deg, var(--md-primary-fg-color), var(--md-accent-fg-color));
+  border-radius: 4px;
+}
+
+/* Custom badges */
+.hns-badge {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  font-size: 0.75em;
+  font-weight: 600;
+  border-radius: 1em;
+  text-transform: uppercase;
+}
+
+.hns-badge--success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.hns-badge--warning {
+  background-color: #ff9800;
+  color: white;
+}
+
+.hns-badge--error {
+  background-color: #f44336;
+  color: white;
+}
+
+.hns-badge--info {
+  background-color: #2196f3;
+  color: white;
+}
+
+/* Screen specification tables */
+.screen-spec-table td:first-child {
+  font-weight: 600;
+  width: 150px;
+  background-color: var(--md-accent-fg-color--transparent);
+}
+
+/* API documentation styling */
+.api-endpoint {
+  background: var(--md-code-bg-color);
+  border-radius: 0.4rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-left: 4px solid var(--md-primary-fg-color);
+}
+
+.api-endpoint .method {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  border-radius: 0.2rem;
+  font-weight: 600;
+  font-size: 0.8em;
+  margin-right: 0.5em;
+}
+
+.api-endpoint .method--get {
+  background-color: #4caf50;
+  color: white;
+}
+
+.api-endpoint .method--post {
+  background-color: #2196f3;
+  color: white;
+}
+
+.api-endpoint .method--put {
+  background-color: #ff9800;
+  color: white;
+}
+
+.api-endpoint .method--delete {
+  background-color: #f44336;
+  color: white;
+}
+
+/* ERD diagram container */
+.erd-container {
+  background: var(--md-code-bg-color);
+  border-radius: 0.4rem;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+/* Print styles */
+@media print {
+  .md-header,
+  .md-footer,
+  .md-sidebar {
+    display: none;
+  }
+  
+  .md-content {
+    margin-left: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .md-typeset .grid.cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .md-typeset table:not([class]) {
+    font-size: 0.65rem;
+  }
+}
+
+/* Search highlight */
+.md-search-result mark {
+  background-color: var(--md-accent-fg-color--transparent);
+  color: var(--md-accent-fg-color);
+  font-weight: 600;
+}
+
+/* Annotations */
+.md-typeset .annotation {
+  background: var(--md-accent-fg-color--transparent);
+  border-radius: 0.2rem;
+  padding: 0.1em 0.3em;
+  font-size: 0.85em;
+}
+
+/* Code annotation numbers */
+.md-typeset .md-annotation__index {
+  background-color: var(--md-accent-fg-color);
+}
+
+/* Custom footer */
+.md-footer {
+  background: linear-gradient(135deg, var(--md-primary-fg-color--dark), var(--md-primary-fg-color));
+}
+
+.md-footer-meta {
+  background: var(--md-primary-fg-color--dark);
+}
+
+/* Keyboard keys */
+.md-typeset kbd {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.2rem;
+  box-shadow: 0 1px 0 var(--md-default-fg-color--lightest);
+  font-size: 0.8em;
+  padding: 0.1em 0.4em;
+}
+
+/* Tooltip enhancements */
+.md-tooltip {
+  background-color: var(--md-default-fg-color);
+  color: var(--md-default-bg-color);
+  border-radius: 0.2rem;
+  padding: 0.4em 0.8em;
+}
+
+/* Diagram zoom */
+.mermaid {
+  text-align: center;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Copy button positioning */
+.highlight .md-clipboard {
+  color: var(--md-default-fg-color--lighter);
+}
+
+.highlight .md-clipboard:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* Content tabs */
+.md-typeset .tabbed-set {
+  border-radius: 0.4rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset .tabbed-content {
+  padding: 1rem;
+}
+
+/* Task list improvements */
+.md-typeset .task-list-item {
+  list-style-type: none;
+}
+
+.md-typeset .task-list-item [type="checkbox"] {
+  margin-right: 0.5em;
+}
+
+/* Definition list */
+.md-typeset dt {
+  font-weight: 600;
+  color: var(--md-primary-fg-color);
+}
+
+.md-typeset dd {
+  margin-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Abbreviations */
+.md-typeset abbr {
+  border-bottom: 1px dotted var(--md-default-fg-color--light);
+  cursor: help;
+}
+
+/* Critic markup */
+.md-typeset .critic.added {
+  background-color: #4caf5020;
+  color: #2e7d32;
+}
+
+.md-typeset .critic.deleted {
+  background-color: #f4433620;
+  color: #c62828;
+  text-decoration: line-through;
+}
+
+.md-typeset .critic.highlighted {
+  background-color: #ffeb3b40;
+}
+
+.md-typeset .critic.commented {
+  color: var(--md-default-fg-color--light);
+}
+
+/* MathJax styling */
+.MathJax {
+  font-size: 1.1em;
+}
+
+/* Mermaid diagram styling */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon {
+  stroke-width: 2px;
+}
+
+.mermaid .edgePath .path {
+  stroke-width: 2px;
+}
+
+.mermaid .label {
+  font-family: var(--md-text-font-family);
+}

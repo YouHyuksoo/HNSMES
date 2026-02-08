@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATA201 - Layout</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .form-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: inline-block;
+        }
+        .form-container {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            position: relative;
+            width: 919px;
+            height: 526px;
+            overflow: hidden;
+        }
+        .form-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13px;
+            border-bottom: 1px solid #555;
+        }
+        .control {
+            position: absolute;
+            font-size: 11px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+        }
+        .control:hover {
+            z-index: 1000;
+            box-shadow: 0 0 0 2px #0078d4, 0 4px 12px rgba(0,0,0,0.3);
+            transform: scale(1.02);
+        }
+        .control-label {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1565c0;
+            font-weight: 500;
+        }
+        .control-button {
+            background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+            border: 1px solid #707070;
+            justify-content: center;
+            font-weight: 500;
+            border-radius: 2px;
+        }
+        .control-button:hover {
+            background: linear-gradient(to bottom, #e5f1fb 0%, #cce4f7 100%);
+            border-color: #0078d4;
+        }
+        .control-textedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            border-radius: 1px;
+        }
+        .control-textedit:hover {
+            border-color: #0078d4;
+        }
+        .control-dateedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23666' d='M4 2h8v1H4zm0 3h8v1H4zm0 3h8v1H4zm0 3h8v1H4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+        }
+        .control-combobox {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+        }
+        .control-grid {
+            background: #fafafa;
+            border: 1px solid #999;
+        }
+        .control-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+            border-bottom: 1px solid #ccc;
+        }
+        .control-panel {
+            background: #fafafa;
+            border: 1px solid #ddd;
+        }
+        .control-group {
+            background: #f5f5f5;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+        }
+        .control-group::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 8px;
+            background: #f5f5f5;
+            padding: 0 4px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #666;
+            transform: translateY(-50%);
+        }
+        .control-checkbox {
+            background: transparent;
+            border: none;
+            padding-left: 16px;
+        }
+        .control-checkbox::before {
+            content: '☐';
+            position: absolute;
+            left: 2px;
+            font-size: 12px;
+        }
+        .control-radio {
+            background: transparent;
+            border: none;
+            padding-left: 16px;
+        }
+        .control-radio::before {
+            content: '○';
+            position: absolute;
+            left: 2px;
+            font-size: 10px;
+        }
+        .tooltip {
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 10000;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .control:hover .tooltip { opacity: 1; }
+        .info {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .info h3 { color: #333; margin-bottom: 10px; }
+        .info table { width: 100%; border-collapse: collapse; }
+        .info th, .info td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .info th { color: #666; font-weight: 500; }
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .stat {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .stat-value { font-size: 20px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 MATA201</h1>
+        <div class="form-wrapper">
+            <div class="form-container">
+                <div class="form-title">MATA201</div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 919px; height: 526px;"
+                     data-text="layoutControl1">
+                    layoutControl1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 919px; height: 526px;"
+                     data-text="Root">
+                    Root
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 235px; width: 387px; height: 233px;"
+                     data-text="LIST">
+                    LIST
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 56px; width: 460px; height: 412px;"
+                     data-text="LIST">
+                    LIST
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 207px; width: 351px; height: 15px;"
+                     data-text="splitterItem5">
+                    splitterItem5
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 78px; width: 355px; height: 61px;"
+                     data-text="layoutControlGroup23">
+                    layoutControlGroup23
+                </div>
+                <div class="control control-grid" 
+                     style="left: 31px; top: 144px; width: 442px; height: 376px;"
+                     data-text="gcList">
+                    gcList
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 90px; height: 20px;"
+                     data-text="gvList">
+                    gvList
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 90px; height: 20px;"
+                     data-text="repositoryItemCheckEdit1">
+                    repositoryItemCheckEdit1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 446px; height: 379px;"
+                     data-text="layoutControlItem16">
+                    layoutControlItem16
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 555px; width: 918px; height: 15px;"
+                     data-text="splitterItem2">
+                    splitterItem2
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 482px; height: 473px;"
+                     data-text="CONDITION">
+                    CONDITION
+                </div>
+                <div class="control control" 
+                     style="left: 486px; top: 35px; width: 409px; height: 473px;"
+                     data-text="INPUTINFO">
+                    INPUTINFO
+                </div>
+                <div class="control control" 
+                     style="left: 482px; top: 35px; width: 20px; height: 473px;"
+                     data-text="splitterItem1">
+                    splitterItem1
+                </div>
+                <div class="control control-grid" 
+                     style="left: 516px; top: 322px; width: 373px; height: 200px;"
+                     data-text="gcList1">
+                    gcList1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 90px; height: 20px;"
+                     data-text="gvList1">
+                    gvList1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 90px; height: 20px;"
+                     data-text="repositoryItemCheckEdit2">
+                    repositoryItemCheckEdit2
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 272px; width: 323px; height: 22px;"
+                     data-text="rdgUseFlag">
+                    rdgUseFlag
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 206px; width: 323px; height: 18px;"
+                     data-text="speIqcQty">
+                    speIqcQty
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 377px; height: 204px;"
+                     data-text="layoutControlItem1">
+                    layoutControlItem1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 143px; width: 387px; height: 21px;"
+                     data-text="QTY">
+                    QTY
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 209px; width: 387px; height: 26px;"
+                     data-text="OK/NG">
+                    OK/NG
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 162px; width: 323px; height: 18px;"
+                     data-text="txtSpec">
+                    txtSpec
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 141px; width: 323px; height: 18px;"
+                     data-text="txtPartNo">
+                    txtPartNo
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 119px; width: 323px; height: 18px;"
+                     data-text="txtItemcode">
+                    txtItemcode
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 56px; width: 387px; height: 21px;"
+                     data-text="ITEMCODE">
+                    ITEMCODE
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 78px; width: 387px; height: 21px;"
+                     data-text="PARTNO">
+                    PARTNO
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 99px; width: 387px; height: 21px;"
+                     data-text="SPEC">
+                    SPEC
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 918px; height: 515px;"
+                     data-text="tabbedControlGroup1">
+                    tabbedControlGroup1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 896px; height: 473px;"
+                     data-text="IQCINSPECTION">
+                    IQCINSPECTION
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 896px; height: 473px;"
+                     data-text="IQCLIST">
+                    IQCLIST
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 896px; height: 61px;"
+                     data-text="CONDITION">
+                    CONDITION
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 96px; width: 896px; height: 412px;"
+                     data-text="LIST">
+                    LIST
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 550px; width: 918px; height: 15px;"
+                     data-text="splitterItem3">
+                    splitterItem3
+                </div>
+                <div class="control control-grid" 
+                     style="left: 24px; top: 159px; width: 871px; height: 369px;"
+                     data-text="gcList2">
+                    gcList2
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 90px; height: 20px;"
+                     data-text="gvList2">
+                    gvList2
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 90px; height: 20px;"
+                     data-text="repositoryItemCheckEdit3">
+                    repositoryItemCheckEdit3
+                </div>
+                <div class="control control" 
+                     style="left: 85px; top: 98px; width: 333px; height: 18px;"
+                     data-text="dteFromTo">
+                    dteFromTo
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 397px; height: 21px;"
+                     data-text="DATE">
+                    DATE
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 874px; height: 372px;"
+                     data-text="layoutControlItem10">
+                    layoutControlItem10
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 184px; width: 323px; height: 18px;"
+                     data-text="txtVendor">
+                    txtVendor
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 121px; width: 387px; height: 21px;"
+                     data-text="VENDOR">
+                    VENDOR
+                </div>
+                <div class="control control" 
+                     style="left: 85px; top: 98px; width: 396px; height: 18px;"
+                     data-text="dteFromTo1">
+                    dteFromTo1
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 460px; height: 21px;"
+                     data-text="DATE">
+                    DATE
+                </div>
+                <div class="control control" 
+                     style="left: 397px; top: 35px; width: 477px; height: 21px;"
+                     data-text="emptySpaceItem1">
+                    emptySpaceItem1
+                </div>
+                <div class="control control" 
+                     style="left: 874px; top: 227px; width: 20px; height: 19px;"
+                     data-text="...">
+                    ...
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 227px; width: 298px; height: 18px;"
+                     data-text="txtFileInfo">
+                    txtFileInfo
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 164px; width: 363px; height: 23px;"
+                     data-text="FILE">
+                    FILE
+                </div>
+                <div class="control control" 
+                     style="left: 363px; top: 164px; width: 24px; height: 23px;"
+                     data-text="layoutControlItem8">
+                    layoutControlItem8
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 98px; width: 323px; height: 18px;"
+                     data-text="txtPrtdate">
+                    txtPrtdate
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 35px; width: 387px; height: 21px;"
+                     data-text="PRINTDATE">
+                    PRINTDATE
+                </div>
+                <div class="control control" 
+                     style="left: 572px; top: 251px; width: 323px; height: 18px;"
+                     data-text="DteDocDate">
+                    DteDocDate
+                </div>
+                <div class="control control" 
+                     style="left: 0px; top: 188px; width: 387px; height: 21px;"
+                     data-text="DOCDATE">
+                    DOCDATE
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <h3>📊 Form Information</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">53</div>
+                    <div class="stat-label">Total Controls</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">1022×585</div>
+                    <div class="stat-label">Form Size (px)</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 20px;">🎛️ Control Types</h3>
+            <table>
+                <tr><th>Type</th><th>Count</th></tr>
+                <tr><td>LayoutControlItem</td><td>15</td></tr>
+                <tr><td>LayoutControlGroup</td><td>10</td></tr>
+                <tr><td>IdatDxTextEdit</td><td>6</td></tr>
+                <tr><td>SplitterItem</td><td>4</td></tr>
+                <tr><td>GridControl</td><td>3</td></tr>
+                <tr><td>GridView</td><td>3</td></tr>
+                <tr><td>RepositoryItemCheckEdit</td><td>3</td></tr>
+                <tr><td>XucFromToDate</td><td>2</td></tr>
+                <tr><td>LayoutControl</td><td>1</td></tr>
+                <tr><td>IdatDxRadioGroup</td><td>1</td></tr>
+                <tr><td>IdatDxSpinEdit</td><td>1</td></tr>
+                <tr><td>TabbedControlGroup</td><td>1</td></tr>
+                <tr><td>EmptySpaceItem</td><td>1</td></tr>
+                <tr><td>IdatDxSimpleButton</td><td>1</td></tr>
+                <tr><td>IdatDxDateEdit</td><td>1</td></tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.control').forEach(el => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = el.getAttribute('title') || el.textContent;
+            document.body.appendChild(tooltip);
+            
+            el.addEventListener('mouseenter', () => {
+                const rect = el.getBoundingClientRect();
+                tooltip.style.left = rect.left + 'px';
+                tooltip.style.top = (rect.bottom + 5) + 'px';
+                tooltip.style.opacity = '1';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>
