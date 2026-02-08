@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xucPreview - Layout</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .form-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: inline-block;
+        }
+        .form-container {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            position: relative;
+            width: 457px;
+            height: 322px;
+            overflow: hidden;
+        }
+        .form-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13px;
+            border-bottom: 1px solid #555;
+        }
+        .control {
+            position: absolute;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            /* 기본적으로 텍스트 숨김 */
+            color: transparent;
+            font-size: 0;
+            text-indent: -9999px;
+        }
+        /* 텍스트 표시하는 컨트롤 */
+        .control.has-text {
+            color: #333;
+            font-size: 10px;
+            text-indent: 0;
+            font-weight: 500;
+        }
+        .control:hover {
+            z-index: 10000 !important;
+            box-shadow: 0 0 0 3px #0078d4, 0 8px 25px rgba(0,0,0,0.4);
+            transform: scale(1.02);
+        }
+        /* 호버 시 툴팁 표시 */
+        .control::after {
+            content: attr(data-info);
+            position: absolute;
+            background: #1a1a2e;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10001;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            text-indent: 0;
+        }
+        .control:hover::after {
+            opacity: 1;
+        }
+        .control-label {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 2px;
+        }
+        .control-label.has-text {
+            color: #222;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        .control-button {
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            border: 1px solid #888;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .control-button.has-text {
+            color: #333;
+            font-weight: 600;
+            font-size: 10px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .control-button:hover {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            border-color: #005a9e;
+        }
+        .control-button.has-text:hover {
+            color: white;
+            text-shadow: none;
+        }
+        .control-textedit {
+            background: #fff;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+        }
+        .control-textedit:hover {
+            border-color: #0078d4;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08), 0 0 0 2px rgba(0,120,212,0.2);
+        }
+        .control-dateedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23666' d='M4 2h8v1H4zm0 3h8v1H4zm0 3h8v1H4zm0 3h8v1H4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+        }
+        .control-combobox {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+        }
+        .control-grid {
+            background: #fafafa;
+            border: 2px solid #666;
+            border-radius: 2px;
+        }
+        /* 그리드 헤더 */
+        .control-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+            border-bottom: 1px solid #999;
+        }
+        /* 그리드 행 표시 */
+        .control-grid::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                #eee 20px,
+                #eee 21px
+            );
+        }
+        .control-panel {
+            background: #f8f8f8;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+        }
+        .control-panel::before {
+            content: '□';
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: 8px;
+            color: #999;
+        }
+        .control-group {
+            background: #f5f5f5;
+            border: 2px solid #aaa;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .control-group.has-text {
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-top: 6px;
+            padding-left: 8px;
+        }
+        .control-group.has-text {
+            color: #555;
+            font-weight: 700;
+            font-size: 10px;
+        }
+        .control-checkbox {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 18px;
+        }
+        .control-checkbox::before {
+            content: '☐';
+            position: absolute;
+            left: 2px;
+            font-size: 14px;
+            color: #555;
+        }
+        .control-checkbox.has-text {
+            color: #333;
+            font-size: 10px;
+        }
+        .control-radio {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 18px;
+        }
+        .control-radio::before {
+            content: '○';
+            position: absolute;
+            left: 3px;
+            font-size: 12px;
+            color: #555;
+        }
+        .control-radio.has-text {
+            color: #333;
+            font-size: 10px;
+        }
+        .tooltip {
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 10000;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .control:hover .tooltip { opacity: 1; }
+        .info {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .info h3 { color: #333; margin-bottom: 10px; }
+        .info table { width: 100%; border-collapse: collapse; }
+        .info th, .info td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .info th { color: #666; font-weight: 500; }
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .stat {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .stat-value { font-size: 20px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 xucPreview</h1>
+        <div class="form-wrapper">
+            <div class="form-container">
+                <div class="form-title">xucPreview</div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintBarManager | Name: printBarManager1 | Size: 100x23" data-type="PrintBarManager" data-name="printBarManager1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PreviewBar | Name: previewBar1 | Text: Toolbar | Size: 100x23" data-type="PreviewBar" data-name="previewBar1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem2 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem3 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem4 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem5 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem5">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem6 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem6">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem7 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem7">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem8 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem8">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem9 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem9">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem10 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem10">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem11 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem11">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem12 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem12">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem13 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem13">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem14 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem14">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem15 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem15">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: ZoomBarEditItem | Name: zoomBarEditItem1 | Size: 100x23" data-type="ZoomBarEditItem" data-name="zoomBarEditItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 3;"
+                     data-info="Type: PrintPreviewRepositoryItemComboBox | Name: printPreviewRepositoryItemComboBox1 | Size: 100x23" data-type="PrintPreviewRepositoryItemComboBox" data-name="printPreviewRepositoryItemComboBox1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem16 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem16">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem17 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem17">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem18 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem18">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem19 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem19">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem20 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem20">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem21 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem21">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem22 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem22">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem23 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem23">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem24 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem24">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem25 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem25">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem26 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem26">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PreviewBar | Name: previewBar2 | Text: Status Bar | Size: 100x23" data-type="PreviewBar" data-name="previewBar2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewStaticItem | Name: printPreviewStaticItem1 | Size: 100x23" data-type="PrintPreviewStaticItem" data-name="printPreviewStaticItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: BarStaticItem | Name: barStaticItem1 | Size: 100x23" data-type="BarStaticItem" data-name="barStaticItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: ProgressBarEditItem | Name: progressBarEditItem1 | Size: 100x23" data-type="ProgressBarEditItem" data-name="progressBarEditItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 3;"
+                     data-info="Type: RepositoryItemProgressBar | Name: repositoryItemProgressBar1 | Size: 100x23" data-type="RepositoryItemProgressBar" data-name="repositoryItemProgressBar1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem1 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: BarButtonItem | Name: barButtonItem1 | Size: 100x23" data-type="BarButtonItem" data-name="barButtonItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewStaticItem | Name: printPreviewStaticItem2 | Size: 100x23" data-type="PrintPreviewStaticItem" data-name="printPreviewStaticItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: ZoomTrackBarEditItem | Name: zoomTrackBarEditItem1 | Size: 100x23" data-type="ZoomTrackBarEditItem" data-name="zoomTrackBarEditItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 3;"
+                     data-info="Type: RepositoryItemZoomTrackBar | Name: repositoryItemZoomTrackBar1 | Size: 100x23" data-type="RepositoryItemZoomTrackBar" data-name="repositoryItemZoomTrackBar1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 457px; height: 21px; z-index: 10;"
+                     data-info="Type: BarDockControl | Name: barDockControlTop | Size: 654x31" data-type="BarDockControl" data-name="barDockControlTop">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 337px; width: 457px; height: 19px; z-index: 10;"
+                     data-info="Type: BarDockControl | Name: barDockControlBottom | Size: 654x28" data-type="BarDockControl" data-name="barDockControlBottom">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 56px; width: 20px; height: 280px; z-index: 10;"
+                     data-info="Type: BarDockControl | Name: barDockControlLeft | Size: 0x401" data-type="BarDockControl" data-name="barDockControlLeft">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 457px; top: 56px; width: 20px; height: 280px; z-index: 10;"
+                     data-info="Type: BarDockControl | Name: barDockControlRight | Size: 0x401" data-type="BarDockControl" data-name="barDockControlRight">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 56px; width: 457px; height: 280px; z-index: 10;"
+                     data-info="Type: PrintControl | Name: printControl1 | Size: 654x401" data-type="PrintControl" data-name="printControl1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewSubItem | Name: printPreviewSubItem1 | Size: 100x23" data-type="PrintPreviewSubItem" data-name="printPreviewSubItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewSubItem | Name: printPreviewSubItem2 | Size: 100x23" data-type="PrintPreviewSubItem" data-name="printPreviewSubItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewSubItem | Name: printPreviewSubItem4 | Size: 100x23" data-type="PrintPreviewSubItem" data-name="printPreviewSubItem4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem27 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem27">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarItem | Name: printPreviewBarItem28 | Size: 100x23" data-type="PrintPreviewBarItem" data-name="printPreviewBarItem28">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: BarToolbarsListItem | Name: barToolbarsListItem1 | Size: 100x23" data-type="BarToolbarsListItem" data-name="barToolbarsListItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewSubItem | Name: printPreviewSubItem3 | Size: 100x23" data-type="PrintPreviewSubItem" data-name="printPreviewSubItem3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem1 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem2 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem3 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem4 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem5 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem5">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem6 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem6">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem7 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem7">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem8 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem8">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem9 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem9">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem10 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem10">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem11 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem11">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem12 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem12">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem13 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem13">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem14 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem14">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem15 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem15">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem16 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem16">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintPreviewBarCheckItem | Name: printPreviewBarCheckItem17 | Size: 100x23" data-type="PrintPreviewBarCheckItem" data-name="printPreviewBarCheckItem17">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: PrintingSystem | Name: printingSystem1 | Size: 100x23" data-type="PrintingSystem" data-name="printingSystem1">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <h3>📊 Form Information</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">69</div>
+                    <div class="stat-label">Total Controls</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">654×460</div>
+                    <div class="stat-label">Form Size (px)</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 20px;">🎛️ Control Types</h3>
+            <table>
+                <tr><th>Type</th><th>Count</th></tr>
+                <tr><td>PrintPreviewBarItem</td><td>28</td></tr>
+                <tr><td>PrintPreviewBarCheckItem</td><td>17</td></tr>
+                <tr><td>BarDockControl</td><td>4</td></tr>
+                <tr><td>PrintPreviewSubItem</td><td>4</td></tr>
+                <tr><td>PreviewBar</td><td>2</td></tr>
+                <tr><td>PrintPreviewStaticItem</td><td>2</td></tr>
+                <tr><td>PrintBarManager</td><td>1</td></tr>
+                <tr><td>ZoomBarEditItem</td><td>1</td></tr>
+                <tr><td>PrintPreviewRepositoryItemComboBox</td><td>1</td></tr>
+                <tr><td>BarStaticItem</td><td>1</td></tr>
+                <tr><td>ProgressBarEditItem</td><td>1</td></tr>
+                <tr><td>RepositoryItemProgressBar</td><td>1</td></tr>
+                <tr><td>BarButtonItem</td><td>1</td></tr>
+                <tr><td>ZoomTrackBarEditItem</td><td>1</td></tr>
+                <tr><td>RepositoryItemZoomTrackBar</td><td>1</td></tr>
+                <tr><td>PrintControl</td><td>1</td></tr>
+                <tr><td>BarToolbarsListItem</td><td>1</td></tr>
+                <tr><td>PrintingSystem</td><td>1</td></tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.control').forEach(el => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = el.getAttribute('title') || el.textContent;
+            document.body.appendChild(tooltip);
+            
+            el.addEventListener('mouseenter', () => {
+                const rect = el.getBoundingClientRect();
+                tooltip.style.left = rect.left + 'px';
+                tooltip.style.top = (rect.bottom + 5) + 'px';
+                tooltip.style.opacity = '1';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>

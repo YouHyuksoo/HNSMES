@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNTA204 - Layout</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .form-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: inline-block;
+        }
+        .form-container {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            position: relative;
+            width: 672px;
+            height: 367px;
+            overflow: hidden;
+        }
+        .form-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13px;
+            border-bottom: 1px solid #555;
+        }
+        .control {
+            position: absolute;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            /* 기본적으로 텍스트 숨김 */
+            color: transparent;
+            font-size: 0;
+            text-indent: -9999px;
+        }
+        /* 텍스트 표시하는 컨트롤 */
+        .control.has-text {
+            color: #333;
+            font-size: 10px;
+            text-indent: 0;
+            font-weight: 500;
+        }
+        .control:hover {
+            z-index: 10000 !important;
+            box-shadow: 0 0 0 3px #0078d4, 0 8px 25px rgba(0,0,0,0.4);
+            transform: scale(1.02);
+        }
+        /* 호버 시 툴팁 표시 */
+        .control::after {
+            content: attr(data-info);
+            position: absolute;
+            background: #1a1a2e;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10001;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            text-indent: 0;
+        }
+        .control:hover::after {
+            opacity: 1;
+        }
+        .control-label {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 2px;
+        }
+        .control-label.has-text {
+            color: #222;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        .control-button {
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            border: 1px solid #888;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .control-button.has-text {
+            color: #333;
+            font-weight: 600;
+            font-size: 10px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .control-button:hover {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            border-color: #005a9e;
+        }
+        .control-button.has-text:hover {
+            color: white;
+            text-shadow: none;
+        }
+        .control-textedit {
+            background: #fff;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+        }
+        .control-textedit:hover {
+            border-color: #0078d4;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08), 0 0 0 2px rgba(0,120,212,0.2);
+        }
+        .control-dateedit {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23666' d='M4 2h8v1H4zm0 3h8v1H4zm0 3h8v1H4zm0 3h8v1H4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+        }
+        .control-combobox {
+            background: white;
+            border: 1px solid #c0c0c0;
+            padding-right: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+        }
+        .control-grid {
+            background: #fafafa;
+            border: 2px solid #666;
+            border-radius: 2px;
+        }
+        /* 그리드 헤더 */
+        .control-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+            border-bottom: 1px solid #999;
+        }
+        /* 그리드 행 표시 */
+        .control-grid::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                #eee 20px,
+                #eee 21px
+            );
+        }
+        .control-panel {
+            background: #f8f8f8;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+        }
+        .control-panel::before {
+            content: '□';
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: 8px;
+            color: #999;
+        }
+        .control-group {
+            background: #f5f5f5;
+            border: 2px solid #aaa;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .control-group.has-text {
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-top: 6px;
+            padding-left: 8px;
+        }
+        .control-group.has-text {
+            color: #555;
+            font-weight: 700;
+            font-size: 10px;
+        }
+        .control-checkbox {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 18px;
+        }
+        .control-checkbox::before {
+            content: '☐';
+            position: absolute;
+            left: 2px;
+            font-size: 14px;
+            color: #555;
+        }
+        .control-checkbox.has-text {
+            color: #333;
+            font-size: 10px;
+        }
+        .control-radio {
+            background: transparent;
+            border: none;
+            justify-content: flex-start;
+            padding-left: 18px;
+        }
+        .control-radio::before {
+            content: '○';
+            position: absolute;
+            left: 3px;
+            font-size: 12px;
+            color: #555;
+        }
+        .control-radio.has-text {
+            color: #333;
+            font-size: 10px;
+        }
+        .tooltip {
+            position: fixed;
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 10000;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .control:hover .tooltip { opacity: 1; }
+        .info {
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .info h3 { color: #333; margin-bottom: 10px; }
+        .info table { width: 100%; border-collapse: collapse; }
+        .info th, .info td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .info th { color: #666; font-weight: 500; }
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .stat {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        .stat-value { font-size: 20px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 MNTA204</h1>
+        <div class="form-wrapper">
+            <div class="form-container">
+                <div class="form-title">MNTA204</div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 672px; height: 367px; z-index: 1;"
+                     data-info="Type: LayoutControl | Name: layoutControl1 | Size: 961x525" data-type="LayoutControl" data-name="layoutControl1">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 672px; height: 367px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: layoutControlGroup1 | Text: Root | Size: 961x525" data-type="LayoutControlGroup" data-name="layoutControlGroup1">
+                    Root
+                </div>
+                <div class="control control " 
+                     style="left: 655px; top: 83px; width: 20px; height: 305px; z-index: 10;"
+                     data-info="Type: SplitterItem | Name: splitterItem1 | Size: 5x436" data-type="SplitterItem" data-name="splitterItem1">
+                    
+                </div>
+                <div class="control control-radio has-text" 
+                     style="left: 385px; top: 261px; width: 205px; height: 17px; z-index: 10;"
+                     data-info="Type: IdatDxRadioGroup | Name: idatDxRadioGroup1 | Size: 293x25" data-type="IdatDxRadioGroup" data-name="idatDxRadioGroup1">
+                    idatDxRadi..
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 204px; height: 16px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem5 | Text: DATE | Size: 292x24" data-type="LayoutControlItem" data-name="layoutControlItem5">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: Timer | Name: tmrRefresh | Size: 100x23" data-type="Timer" data-name="tmrRefresh">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 83px; width: 655px; height: 305px; z-index: 10;"
+                     data-info="Type: TabbedControlGroup | Name: tabControl | Size: 936x436" data-type="TabbedControlGroup" data-name="tabControl">
+                    
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 638px; height: 272px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: lcgPage1 | Text: Assembly Process Result Information | Size: 912x389" data-type="LayoutControlGroup" data-name="lcgPage1">
+                    Assembly Proc..
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 638px; height: 272px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: lcgPage2 | Text: Assembly Process Line of Balance | Size: 912x389" data-type="LayoutControlGroup" data-name="lcgPage2">
+                    Assembly Proc..
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 638px; height: 272px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: lcgPage3 | Text: Current Production P/NO Daily Trend | Size: 912x389" data-type="LayoutControlGroup" data-name="lcgPage3">
+                    Current Produ..
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 638px; height: 272px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: lcgPage4 | Text: Monthly / Weekly / Daily Trend | Size: 912x389" data-type="LayoutControlGroup" data-name="lcgPage4">
+                    Monthly / Wee..
+                </div>
+                <div class="control control has-text" 
+                     style="left: 0px; top: 35px; width: 638px; height: 272px; z-index: 10;"
+                     data-info="Type: LayoutControlGroup | Name: lcgPage5 | Text: Accumulated Information(Detail P/NO) | Size: 912x389" data-type="LayoutControlGroup" data-name="lcgPage5">
+                    Accumulated I..
+                </div>
+                <div class="control control " 
+                     style="left: 8px; top: 43px; width: 655px; height: 45px; z-index: 10;"
+                     data-info="Type: Label | Name: label1 | Text: HS ETH Assembly Result | Size: 937x65" data-type="Label" data-name="label1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 658px; height: 48px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem2 | Size: 941x69" data-type="LayoutControlItem" data-name="layoutControlItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 16px; top: 165px; width: 635px; height: 115px; z-index: 10;"
+                     data-info="Type: ChartControl | Name: chtPage1_1 | Size: 908x165" data-type="ChartControl" data-name="chtPage1_1">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 16px; top: 283px; width: 635px; height: 102px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList1_1 | Size: 908x146" data-type="GridControl" data-name="gcList1_1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList1_1 | Size: 100x23" data-type="GridView" data-name="gvList1_1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 202px; width: 638px; height: 105px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem1 | Size: 912x150" data-type="LayoutControlItem" data-name="layoutControlItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 84px; width: 638px; height: 118px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem3 | Size: 912x169" data-type="LayoutControlItem" data-name="layoutControlItem3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 16px; top: 116px; width: 635px; height: 46px; z-index: 10;"
+                     data-info="Type: IdatDxPictureEdit | Name: idatDxPictureEdit1 | Size: 908x66" data-type="IdatDxPictureEdit" data-name="idatDxPictureEdit1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 638px; height: 49px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem4 | Size: 912x70" data-type="LayoutControlItem" data-name="layoutControlItem4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 16px; top: 317px; width: 635px; height: 68px; z-index: 10;"
+                     data-info="Type: ChartControl | Name: chtPage3_2 | Size: 908x98" data-type="ChartControl" data-name="chtPage3_2">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 16px; top: 252px; width: 635px; height: 61px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList3_2 | Size: 908x88" data-type="GridControl" data-name="gcList3_2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList3_2 | Size: 100x23" data-type="GridView" data-name="gvList3_2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 16px; top: 179px; width: 635px; height: 70px; z-index: 10;"
+                     data-info="Type: ChartControl | Name: chtPage3_1 | Size: 908x100" data-type="ChartControl" data-name="chtPage3_1">
+                    
+                </div>
+                <div class="control control-grid " 
+                     style="left: 16px; top: 116px; width: 635px; height: 60px; z-index: 5;"
+                     data-info="Type: GridControl | Name: gcList3_1 | Size: 908x87" data-type="GridControl" data-name="gcList3_1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 70px; height: 16px; z-index: 10;"
+                     data-info="Type: GridView | Name: gvList3_1 | Size: 100x23" data-type="GridView" data-name="gvList3_1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 16px; top: 116px; width: 635px; height: 269px; z-index: 10;"
+                     data-info="Type: Label | Name: label2 | Text: Coming soon  | Size: 908x385" data-type="Label" data-name="label2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 638px; height: 63px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem7 | Size: 912x91" data-type="LayoutControlItem" data-name="layoutControlItem7">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 98px; width: 638px; height: 72px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem8 | Size: 912x104" data-type="LayoutControlItem" data-name="layoutControlItem8">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 171px; width: 638px; height: 64px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem9 | Size: 912x92" data-type="LayoutControlItem" data-name="layoutControlItem9">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 235px; width: 638px; height: 71px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem10 | Size: 912x102" data-type="LayoutControlItem" data-name="layoutControlItem10">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 638px; height: 272px; z-index: 10;"
+                     data-info="Type: LayoutControlItem | Name: layoutControlItem6 | Size: 912x389" data-type="LayoutControlItem" data-name="layoutControlItem6">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 394px; top: 35px; width: 243px; height: 42px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem1 | Size: 348x61" data-type="EmptySpaceItem" data-name="emptySpaceItem1">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 179px; top: 77px; width: 458px; height: 39px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem2 | Size: 655x56" data-type="EmptySpaceItem" data-name="emptySpaceItem2">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 35px; width: 179px; height: 42px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem3 | Size: 257x61" data-type="EmptySpaceItem" data-name="emptySpaceItem3">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 179px; top: 35px; width: 214px; height: 42px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem4 | Size: 307x61" data-type="EmptySpaceItem" data-name="emptySpaceItem4">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 179px; top: 116px; width: 458px; height: 190px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem5 | Size: 655x272" data-type="EmptySpaceItem" data-name="emptySpaceItem5">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 279px; width: 179px; height: 27px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem6 | Size: 257x39" data-type="EmptySpaceItem" data-name="emptySpaceItem6">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 77px; width: 179px; height: 39px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem7 | Size: 257x56" data-type="EmptySpaceItem" data-name="emptySpaceItem7">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 148px; width: 179px; height: 15px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem8 | Size: 257x16" data-type="EmptySpaceItem" data-name="emptySpaceItem8">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 127px; width: 179px; height: 15px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem9 | Size: 257x15" data-type="EmptySpaceItem" data-name="emptySpaceItem9">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 175px; width: 179px; height: 16px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem10 | Size: 257x23" data-type="EmptySpaceItem" data-name="emptySpaceItem10">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 191px; width: 179px; height: 21px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem11 | Size: 257x31" data-type="EmptySpaceItem" data-name="emptySpaceItem11">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 116px; width: 179px; height: 15px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem12 | Size: 257x15" data-type="EmptySpaceItem" data-name="emptySpaceItem12">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 137px; width: 179px; height: 15px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem13 | Size: 257x15" data-type="EmptySpaceItem" data-name="emptySpaceItem13">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 159px; width: 179px; height: 16px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem14 | Size: 257x23" data-type="EmptySpaceItem" data-name="emptySpaceItem14">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 213px; width: 179px; height: 39px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem15 | Size: 257x56" data-type="EmptySpaceItem" data-name="emptySpaceItem15">
+                    
+                </div>
+                <div class="control control " 
+                     style="left: 0px; top: 252px; width: 179px; height: 27px; z-index: 10;"
+                     data-info="Type: EmptySpaceItem | Name: emptySpaceItem16 | Size: 257x39" data-type="EmptySpaceItem" data-name="emptySpaceItem16">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <h3>📊 Form Information</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">49</div>
+                    <div class="stat-label">Total Controls</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">961×525</div>
+                    <div class="stat-label">Form Size (px)</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 20px;">🎛️ Control Types</h3>
+            <table>
+                <tr><th>Type</th><th>Count</th></tr>
+                <tr><td>EmptySpaceItem</td><td>16</td></tr>
+                <tr><td>LayoutControlItem</td><td>10</td></tr>
+                <tr><td>LayoutControlGroup</td><td>6</td></tr>
+                <tr><td>ChartControl</td><td>3</td></tr>
+                <tr><td>GridControl</td><td>3</td></tr>
+                <tr><td>GridView</td><td>3</td></tr>
+                <tr><td>Label</td><td>2</td></tr>
+                <tr><td>LayoutControl</td><td>1</td></tr>
+                <tr><td>SplitterItem</td><td>1</td></tr>
+                <tr><td>IdatDxRadioGroup</td><td>1</td></tr>
+                <tr><td>Timer</td><td>1</td></tr>
+                <tr><td>TabbedControlGroup</td><td>1</td></tr>
+                <tr><td>IdatDxPictureEdit</td><td>1</td></tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.control').forEach(el => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = el.getAttribute('title') || el.textContent;
+            document.body.appendChild(tooltip);
+            
+            el.addEventListener('mouseenter', () => {
+                const rect = el.getBoundingClientRect();
+                tooltip.style.left = rect.left + 'px';
+                tooltip.style.top = (rect.bottom + 5) + 'px';
+                tooltip.style.opacity = '1';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>
