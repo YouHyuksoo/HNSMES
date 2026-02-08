@@ -34,10 +34,11 @@ namespace DevExpress.RealtorWorld.Win {
     };
 
     public class Home {
-        DataRow row;
-        Image photo, plan;
+        readonly DataRow row;
+        readonly Image photo;
+        Image plan;
         List<Image> photos;
-        string features;
+        readonly string features;
         public Home(DataRow row) {
             this.row = row;
             features = DataHelper.GetFeaturesFormat(string.Format("{0}", row["Features"]));
@@ -78,8 +79,8 @@ namespace DevExpress.RealtorWorld.Win {
     }
 
     public class Agent {
-        DataRow person;
-        Image photo;
+        readonly DataRow person;
+        readonly Image photo;
         public Agent(DataRow person) {
             this.person = person;
             if(!(person["Photo"] is DBNull))
@@ -94,7 +95,7 @@ namespace DevExpress.RealtorWorld.Win {
     }
 
     public class MortgageRate {
-        DataRow mortgageRate;
+        readonly DataRow mortgageRate;
 
         public DateTime Date { get { return (DateTime)mortgageRate["Date"]; } }
         public double FRM30 { get { return (double)mortgageRate["FRM30"]; } }
@@ -107,9 +108,10 @@ namespace DevExpress.RealtorWorld.Win {
     }
 
     public class LoanPayment {
-        int monthNumber;
-        double balance, interest, principal;
-        DateTime month;
+        readonly int monthNumber;
+        double balance, principal;
+        readonly double interest;
+        readonly DateTime month;
         public LoanPayment(double balance, double monthlyPayment, int month, double interestRate, DateTime startMonth) {
             this.monthNumber = month;
             this.month = startMonth.AddMonths(month - 1);
@@ -224,7 +226,7 @@ namespace DevExpress.RealtorWorld.Win {
     }
 
     public class DataHelper {
-        static BackgroundWorker worker = new BackgroundWorker();
+        static readonly BackgroundWorker worker = new BackgroundWorker();
         static WMIService wmiService;
         static DataTable photos;
         static DataTable housesSales;
@@ -276,8 +278,7 @@ namespace DevExpress.RealtorWorld.Win {
             }
         }
         internal static List<Image> GetPhotos(Home home) {
-            List<Image> ret = new List<Image>();
-            ret.Add(home.Photo);
+            List<Image> ret = new List<Image> { home.Photo };
             foreach(DataRow row in PhotosTable.Rows) {
                 int id = home.ID % 7 + 1;
                 if(id.Equals(row["ParentID"]))
@@ -324,39 +325,40 @@ namespace DevExpress.RealtorWorld.Win {
             return ret;
         }
         public static void InitListingsTile(TileItem tile) {
-            bool animateText = true;
+            bool animateText;
             foreach(Home home in DataHelper.Homes) {
                 animateText = true;
                 foreach(Image photo in home.Photos) {
-                    TileItemFrame info = new TileItemFrame();
-                    info.AnimateBackgroundImage = true;
-                    info.UseBackgroundImage = true;
-                    info.BackgroundImage = photo;
-                    info.AnimateText = animateText;
-                    info.UseText = true;
-                    info.Text2 = string.Format("<backcolor=108,189,69> {0} Beds   <br> {1} Baths  ", home.BedsString, home.BathsString);
-                    info.Text3 = string.Format("<backcolor=108,189,69><size=+3> {0} ", home.PriceString);
-                    info.Tag = home;
+                    TileItemFrame info = new TileItemFrame {
+                        AnimateBackgroundImage = true,
+                        UseBackgroundImage = true,
+                        BackgroundImage = photo,
+                        AnimateText = animateText,
+                        UseText = true,
+                        Text2 = string.Format("<backcolor=108,189,69> {0} Beds   <br> {1} Baths  ", home.BedsString, home.BathsString),
+                        Text3 = string.Format("<backcolor=108,189,69><size=+3> {0} ", home.PriceString),
+                        Tag = home
+                    };
                     animateText = false;
                     tile.Frames.Add(info);
                 }
             }
         } 
-        public static void InitAgentsTile(TileItem tile, int size) {
+        public static void InitAgentsTile(TileItem tile) {
             tile.FrameAnimationInterval = 5100;
             tile.BackgroundImageAlignment = TileItemContentAlignment.MiddleRight;
             tile.BackgroundImageScaleMode = TileItemImageScaleMode.NoScale;
-            
+
             foreach(Agent agent in DataHelper.Agents) {
-                TileItemFrame info = new TileItemFrame();
-                info.AnimateBackgroundImage = true;
-                info.UseBackgroundImage = true;
-                info.BackgroundImage = GetScaleImage(agent.Photo, 90);
-                
-                info.AnimateText = true;
-                info.UseText = true;
-                info.Text = string.Format("<size=+4>{0} {1}</size><br>{2}", agent.FirstName, agent.LastName, agent.Phone);
-                info.Tag = agent;
+                TileItemFrame info = new TileItemFrame {
+                    AnimateBackgroundImage = true,
+                    UseBackgroundImage = true,
+                    BackgroundImage = GetScaleImage(agent.Photo, 90),
+                    AnimateText = true,
+                    UseText = true,
+                    Text = string.Format("<size=+4>{0} {1}</size><br>{2}", agent.FirstName, agent.LastName, agent.Phone),
+                    Tag = agent
+                };
                 tile.Frames.Add(info);
             }
         }
@@ -364,20 +366,22 @@ namespace DevExpress.RealtorWorld.Win {
             return new Bitmap(image, image.Width * percent / 100, image.Height * percent / 100);
         }
         public static void InitZillowTile(TileItem tile) {
-            TileItemFrame info = new TileItemFrame();
-            info.AnimateImage = true;
-            info.AnimateText = true;
-            info.UseImage = true;
-            info.UseText = true;
-            info.Text = string.Empty;
+            TileItemFrame info = new TileItemFrame {
+                AnimateImage = true,
+                AnimateText = true,
+                UseImage = true,
+                UseText = true,
+                Text = string.Empty
+            };
             tile.Frames.Add(info);
-            info = new TileItemFrame();
-            info.AnimateText = true;
-            info.AnimateImage = true;
-            info.Image = null;
-            info.Text = "<size=+2>Your <b>Edge</b> in <b>Real Estate</b>";
-            info.UseImage = true;
-            info.UseText = true;
+            info = new TileItemFrame {
+                AnimateText = true,
+                AnimateImage = true,
+                Image = null,
+                Text = "<size=+2>Your <b>Edge</b> in <b>Real Estate</b>",
+                UseImage = true,
+                UseText = true
+            };
             tile.Frames.Add(info);
         }
         public static List<Home> GetHomesByAgent(Agent agent) { 
@@ -430,9 +434,10 @@ namespace DevExpress.RealtorWorld.Win {
 
         WMIService(string path) {
             queryCacheCore = new Dictionary<string, ManagementObjectCollection>();
-            ConnectionOptions options = new ConnectionOptions();
-            options.Impersonation = ImpersonationLevel.Impersonate;
-            options.Authentication = AuthenticationLevel.Packet;
+            ConnectionOptions options = new ConnectionOptions {
+                Impersonation = ImpersonationLevel.Impersonate,
+                Authentication = AuthenticationLevel.Packet
+            };
             this.scopeCore = new ManagementScope(path, options);
             try {
                 Scope.Connect();
@@ -451,7 +456,7 @@ namespace DevExpress.RealtorWorld.Win {
             connectedCore = false;
             if(queryCacheCore != null) {
                 foreach(KeyValuePair<string, ManagementObjectCollection> pair in queryCacheCore) {
-                    if(pair.Value != null) pair.Value.Dispose();
+                    pair.Value?.Dispose();
                 }
                 queryCacheCore.Clear();
                 queryCacheCore = null;

@@ -39,7 +39,11 @@
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_type",
       "mcp__playwright__browser_evaluate",
-      "mcp__playwright__browser_navigate"
+      "mcp__playwright__browser_navigate",
+      "Bash(mkdocs build:*)",
+      "Bash(dotnet build:*)",
+      "Bash(\"C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v4.0.30319\\\\msbuild.exe\" \"C:\\\\Project\\\\HNSMES\\\\HAENGSUNG_HNSMES_UI_DBESS.sln\" /t:Build /p:Configuration=Debug /verbosity:minimal)",
+      "Bash(dotnet restore:*)"
     ]
   }
 }

@@ -1,0 +1,5 @@
+<Project>
+  <!-- .NET SDK(dotnet build)에서 .NET Framework 전용 작업 미지원 우회 -->
+  <Target Name="CompileLicxFiles" />
+  <Target Name="_DeploymentGenerateTrustInfo" />
+</Project>

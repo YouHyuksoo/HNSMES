@@ -179,6 +179,7 @@ nav:
   
   - 화면 명세:
     - screens/overview.md
+    - 화면 시각화: screens/form-viewer.md
     - screens/complete-specs.md
     - 공통 (COM): screens/com.md
     - 시스템 (SYS): screens/sys.md

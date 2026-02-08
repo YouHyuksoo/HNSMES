@@ -2,6 +2,12 @@
 
 HNSMES 시스템은 **9개 모듈**, **189개 화면**으로 구성된 제조실행시스템(MES)입니다.
 
+!!! example "Interactive Form Viewer"
+    Designer.cs를 자동 파싱하여 실제 폼 레이아웃을 인터랙티브하게 시각화합니다.
+    모듈별 폼 선택, 줌/팬, 컨트롤 툴팁 등을 지원합니다.
+
+    [:material-eye: **화면 시각화 열기**](./form-viewer.md){ .md-button .md-button--primary }
+
 ## 모듈 구성
 
 <div class="grid cards" markdown>
