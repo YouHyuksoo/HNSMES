@@ -205,6 +205,7 @@ nav:
   - 개선 제안:
     - improvements/security.md
     - improvements/refactoring.md
+    - WCF 크래시 분석: improvements/wcf-crash-analysis.md
     - improvements/roadmap.md
   
   - 참고 자료:
