@@ -1,4 +1,12 @@
-# ERD (Entity Relationship Diagram)
+# ERD (Entity Relationship Diagram) (폐기됨)
+
+!!! danger "이 문서는 폐기되었습니다"
+    이 문서의 내용은 실제 DB와 다릅니다. 정확한 정보는 [ERD 다이어그램](database/erd-complete.md)을 참조하세요.
+    최종 업데이트: 2026-02-15
+
+---
+
+**아래 내용은 더 이상 유효하지 않습니다.**
 
 ## 1. 개체 관계도 개요
 
